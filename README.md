@@ -56,7 +56,7 @@ Coming soon.
 
 ## Contributing
 
-Email [us](jybantang@up.edu.ph) :)
+Email [us](mailto:jybantang@up.edu.ph) :)
 
 ## Versioning
 
