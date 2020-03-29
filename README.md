@@ -34,7 +34,7 @@ Build the docker image
 docker build -t trace-ph:{semver} .
 ```
 
-The create the container
+Then create the container
 
 ```
 docker run --name={identifier} -d -p 80:{port to access locally} trace-ph:{semver}
