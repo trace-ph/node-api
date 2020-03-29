@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "preinstall": "command -v link-module-alias && link-module-alias clean || true",
+    "postinstall": "link-module-alias"
   },
   "keywords": [
     "traceph",
@@ -22,10 +24,18 @@
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^14.3.1",
+    "link-module-alias": "^1.2.0",
     "mongoose": "^5.9.6",
     "require-directory": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
+  },
+  "_moduleAliases": {
+    "~": ".",
+    "~controllers": "./controllers",
+    "~models": "./models",
+    "~middlewares": "./middlewares",
+    "~validators": "./validators"
   }
 }
