@@ -6,8 +6,6 @@ require('./configs/database.config').config();
 const { API_PORT, API_URL } = process.env;
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const { mobile, ...routes } = require('./routes');
 const Routes = require('./routes');
 
 const app = express();
