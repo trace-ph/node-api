@@ -31,7 +31,7 @@ module.exports = connection => {
           required: true
         },
         coordinates: {
-          type: [Number],
+          type: [Schema.Types.Number],
           required: true
         }
       },
