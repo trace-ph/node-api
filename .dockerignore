@@ -1,0 +1,11 @@
+# Ignore the following source files
+src/test             # no need for the unit test files
+src/.env             # no need for the development env file
+# ignore dev related stuffs
+**/*.log               # ignore any generated log files
+.idea               # ignore Webstorm hidden configurations
+.eslintrc           # ignore Webstorm hidden configurations
+# git stuffs are not needed
+.git
+.gitignore
+__test__
