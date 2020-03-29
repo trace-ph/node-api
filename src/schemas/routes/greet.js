@@ -1,7 +1,9 @@
-const Joi = require('@hapi/joi') 
+const Joi = require('@hapi/joi');
 
-const schemas = { 
-    device_id: Joi.string().required()
-}; 
+const devicSchema = {
+	POST: Joi.object({
+		device_id: Joi.string().required()
+	})
+};
 
-module.exports = schemas;
+module.exports = devicSchema;
