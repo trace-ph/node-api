@@ -1,4 +1,4 @@
-# Speech to Text Service
+# TracePH
 
 TracePH API using NodeJS, Express MongoDB
 ## Getting Started
@@ -34,7 +34,7 @@ Build the docker image
 docker build -t trace-ph:{semver} .
 ```
 
-## Usage
+The create the container
 
 ```
 docker run --name={identifier} -d -p 80:{port to access locally} trace-ph:{semver}
@@ -52,10 +52,11 @@ Coming soon.
 
 * [NodeJS](https://https://nodejs.org/)
 * [ExpressJS](https://github.com/expressjs/express/)
+* [MongoDB](https://www.mongodb.com/)
 
 ## Contributing
 
-Email us (jybantang@up.edu.ph) :)
+Email [us](jybantang@up.edu.ph) :)
 
 ## Versioning
 
