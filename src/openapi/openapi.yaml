@@ -1,0 +1,121 @@
+openapi: '3.0.0'
+info:
+  version: 0.0.0
+  title: TracePH API
+  license:
+    name: MIT
+servers:
+  - url: https://trace.ph/api
+paths:
+  /registraion:
+    post:
+      summary: Register your device
+      operationId: register
+      tags:
+        - Registration
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeContact'
+
+      responses:
+        '200':
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeContact'
+        '4XX': '#/components/responses/generic_error_response'
+
+  /node_contacts:
+    post:
+      summary: Record a contact
+      operationId: record_contact
+      tags:
+        - Contact Recording
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeContact'
+
+      responses:
+        '201':
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeContact'
+        '4XX': '#/components/responses/generic_error_response'
+
+components:
+  responses:
+    generic_error_response:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/generic_error'
+
+  schemas:
+    Node:
+      type: object
+      required:
+        - device_id
+        - person_id
+      properties:
+        device_id:
+          type: string
+        person_id:
+          type: string
+
+    NodeContact:
+      type: object
+      required:
+        - type
+        - timestamp
+        - source_node_id
+        - node_pairs
+        - location
+      properties:
+        type:
+          type: string
+          description: Handling of different types of contact
+          enum:
+            - 'direct-bluetooth'
+            - 'direct-network'
+            - 'indirect'
+            - 'manual'
+        timestamp:
+          type: string
+          description: Must be client generated since offline storage of data is assumed.
+          format: datetime
+        source_node_id:
+          description: This field refer to the node who sent this record.
+          type: string
+        node_pairs:
+          description: A node_pair with a single data is allowed to handle 'Indirect' contact. See TOR 2c.
+          type: array
+          items:
+            type: string
+        location:
+          description: Stored in GeoJSON format
+          type: object
+          required:
+            - type
+            - coordinates
+          properties:
+            type:
+              type: string
+              enum:
+                - Point
+            coordinates:
+              type: array
+              items:
+                type: number
+
+    generic_error:
+      type: object
