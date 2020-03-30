@@ -8,7 +8,7 @@ const NodeContactSchema = new Schema(
     // Handling of different types of contact
     type: {
       type: Schema.Types.String,
-      enum: ['direct-bluethooth', 'direct-network', 'indirect', 'manual'],
+      enum: ['direct-bluetooth', 'direct-network', 'indirect', 'manual'],
       required: true
     },
 
