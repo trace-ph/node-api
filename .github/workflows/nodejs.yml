@@ -43,16 +43,11 @@ jobs:
 
     - name: Deploy to DigitalOcean
       uses: appleboy/ssh-action@master
-      env:
-        DB_CONN: ${{ secrets.DB_CONN }}
-        API_PORT: ${{ secrets.API_PORT }}
-        API_URL: ${{ secrets.API_URL }}
       with:
         host: ${{ secrets.SSH_HOST }}
         USERNAME: ${{ secrets.SSH_USERNAME }}
         KEY: ${{ secrets.SSH_KEY }}
         script_stop: true
-        envs: DB_CONN,API_PORT,API_URL
         script: |
           docker ps -aq --filter "name=traceph" | grep -q . && docker stop traceph && docker rm -fv traceph
-          docker run --name=traceph -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/traceph:latest
+          docker run --name=traceph -e DB_CONN=${{ secrets.DB_CONN }} -e API_PORT=${{ secrets.API_PORT }} -e API_URL=${{ secrets.API_URL }} -d -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} ${{ secrets.DOCKER_USERNAME }}/traceph:latest
