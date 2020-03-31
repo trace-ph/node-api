@@ -48,9 +48,9 @@ jobs:
         API_PORT: ${{ secrets.API_PORT }}
         API_URL: ${{ secrets.API_URL }}
       with:
-        host: ${{ secrets.HOST }}
-        USERNAME: ${{ secrets.USERNAME }}
-        KEY: ${{ secrets.SSHKEY }}
+        host: ${{ secrets.SSH_HOST }}
+        USERNAME: ${{ secrets.SSH_USERNAME }}
+        KEY: ${{ secrets.SSH_KEY }}
         script_stop: true
         envs: DB_CONN,API_PORT,API_URL
-        script: docker stop traceph && docker rm traceph && docker run --name=traceph -d -p 5000:5000 traceph:$(echo $GITHUB_SHA | head -c7)
+        script: docker stop traceph && docker rm traceph && docker run --name=traceph -d -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} traceph:$(echo $GITHUB_SHA | head -c7)
