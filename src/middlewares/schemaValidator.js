@@ -8,21 +8,20 @@ const _validationOptions = {
 	stripUnknown: true // remove unknown keys from the validated data
 };
 
-const validate = (schema, property) => {
-	return (req, res, next) => {
-		const { error } = schema.validate(req.body, _validationOptions);
-		const valid = error == null;
+// property: body (default), query, param
+const validate = (schema, property = 'body') => (req, res, next) => {
+	const { error } = schema.validate(req[property], _validationOptions);
+	const valid = error == null;
 
-		if (!valid) {
-			const { details } = error;
-			const message = details.map(i => i.message).join(',');
+	if (!valid) {
+		const { details } = error;
+		const message = details.map(i => i.message).join(',');
 
-			logger.error(message);
-			return res.status(422).json({ error: message });
-		}
+		logger.error(message);
+		return res.status(422).json({ error: message });
+	}
 
-		next();
-	};
+	next();
 };
 
 module.exports = validate;
