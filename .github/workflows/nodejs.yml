@@ -30,7 +30,7 @@ jobs:
       run: cd src && npm install
     
     - name: Build container image
-      run: cd ../ && docker build -t ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7) .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7) .
 
     - name: Docker Login
       env:
