@@ -9,7 +9,7 @@ const save = async device_id => {
 	const node = { device_id, person_id: uuidv4() };
 	node.node_id = uuidv5(
 		`${device_id}${node.person_id}`,
-		process.env.SERVICE_ID
+		process.env.HASH_KEY
 	);
 
 	return await new Node(node).save();
