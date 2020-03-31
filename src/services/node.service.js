@@ -15,18 +15,11 @@ const save = async device_id => {
 	return await new Node(node).save();
 };
 
-const getOneByDeviceId = async device_id => {
-	return await Node.findOne({
-		device_id
-	});
-};
-
 const find = async node => {
 	return await Node.find(node);
 };
 
 module.exports = {
 	save,
-	getOneByDeviceId,
 	find
 };
