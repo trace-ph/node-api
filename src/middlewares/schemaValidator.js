@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require('~logger');
+
 const _validationOptions = {
 	abortEarly: false, // abort after the last validation error
 	allowUnknown: true, // allow unknown keys that will be ignored
@@ -15,8 +17,8 @@ const validate = (schema, property) => {
 			const { details } = error;
 			const message = details.map(i => i.message).join(',');
 
-			console.log('Error: ', message);
-			res.status(422).json({ error: message });
+			logger.error(message);
+			return res.status(422).json({ error: message });
 		}
 
 		next();

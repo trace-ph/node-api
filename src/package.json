@@ -35,6 +35,7 @@
   },
   "_moduleAliases": {
     "~": ".",
+    "~logger": "./configs/winston.config.js",
     "~controllers": "./controllers",
     "~models": "./models",
     "~middlewares": "./middlewares",

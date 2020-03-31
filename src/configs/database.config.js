@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const logger = require('~logger');
 
 const config = (opts = {}) => {
 	const uri =
@@ -10,10 +11,8 @@ const config = (opts = {}) => {
 			uri,
 			Object.assign({ useNewUrlParser: true, useUnifiedTopology: true }, opts)
 		)
-		.then(
-			() => console.log('Connection to database successful!'),
-			err => console.log('Database error:', e.message)
-		);
+		.then(() => logger.info('Connection to database successful!'))
+		.catch(err => logger.error(`Database error: ${err.message}`));
 };
 
 module.exports = {
