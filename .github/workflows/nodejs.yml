@@ -30,7 +30,7 @@ jobs:
       run: cd src && npm install
     
     - name: Build container image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7) .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/traceph:latest .
 
     - name: Docker Login
       env:
@@ -39,7 +39,7 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
     - name: Push image to Docker Hub
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7)
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/traceph:latest
 
     - name: Deploy to DigitalOcean
       uses: appleboy/ssh-action@master
@@ -53,4 +53,6 @@ jobs:
         KEY: ${{ secrets.SSH_KEY }}
         script_stop: true
         envs: DB_CONN,API_PORT,API_URL
-        script: docker ps -aq --filter "name=traceph" | grep -q . && docker stop traceph && docker rm -fv traceph && docker run --name=traceph -d -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} traceph:$(echo $GITHUB_SHA | head -c7)
+        script: |
+          docker ps -aq --filter "name=traceph" | grep -q . && docker stop traceph && docker rm -fv traceph
+          docker run --name=traceph -d -p $API_PORT:$API_PORT traceph:latest
