@@ -1,0 +1,56 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  pull_request:
+    branches:    
+    - 'relqa/**'
+    - '!relqa/**-alpha' 
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install npm modules
+      run: cd src && npm install
+    
+    - name: Build container image
+      run: cd ../ && docker build -t ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7) .
+
+    - name: Docker Login
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - name: Push image to Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/traceph:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Deploy to DigitalOcean
+      uses: appleboy/ssh-action@master
+      env:
+        DB_CONN: ${{ secrets.DB_CONN }}
+        API_PORT: ${{ secrets.API_PORT }}
+        API_URL: ${{ secrets.API_URL }}
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        KEY: ${{ secrets.SSHKEY }}
+        script_stop: true
+        envs: DB_CONN,API_PORT,API_URL
+        script: docker stop traceph && docker rm traceph && docker run --name=traceph -d -p 5000:5000 traceph:$(echo $GITHUB_SHA | head -c7)
