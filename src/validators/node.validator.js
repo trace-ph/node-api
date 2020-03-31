@@ -2,30 +2,48 @@
 
 const joi = require('@hapi/joi');
 
-const DEVICE_ID_REGEX = /(?:\w{2}(?::|$)){6}/;
+const MAC_ADDRESS_REGEX = /^(?:[0-9a-fA-F]{2}\:){5}[0-9a-fA-F]{2}$/;
+const UUID_REGEX = /^[0-9a-fA-F]{8}\-(?:(?:[0-9a-fA-F]{4}\-){3})[0-9a-fA-F]{12}$/;
 
 const nodeSchema = {
-	POST: joi.object({
-		device_id: joi
-			.string()
-			.pattern(DEVICE_ID_REGEX)
-			.required()
-			.messages({
-				'string.pattern.base': `device_id has an invalid format: "{#value}"`
-			})
-	}),
-	PUT: joi.object({
-		node_id: joi.string().required(),
-		device_id: joi.string().required(),
-		person_id: joi.string().required()
-	}),
+	POST: joi
+		.object({
+			device_id: joi
+				.string()
+				.pattern(MAC_ADDRESS_REGEX)
+				.required()
+		})
+		.messages({
+			'string.pattern.base': `{#key} has an invalid format: "{#value}"`
+		}),
+	PUT: joi
+		.object({
+			node_id: joi
+				.string()
+				.pattern(UUID_REGEX)
+				.required(),
+			device_id: joi
+				.string()
+				.pattern(MAC_ADDRESS_REGEX)
+				.required(),
+			person_id: joi
+				.string()
+				.pattern(UUID_REGEX)
+				.required()
+		})
+		.messages({
+			'string.pattern.base': `{#key} has an invalid format: "{#value}"`
+		}),
 	GET: joi
 		.object({
-			node_id: joi.string(),
-			device_id: joi.string().pattern(DEVICE_ID_REGEX),
-			person_id: joi.string()
+			node_id: joi.string().pattern(UUID_REGEX),
+			device_id: joi.string().pattern(MAC_ADDRESS_REGEX),
+			person_id: joi.string().pattern(UUID_REGEX)
 		})
 		.or('node_id', 'device_id', 'person_id')
+		.messages({
+			'string.pattern.base': `{#key} has an invalid format: "{#value}"`
+		})
 };
 
 module.exports = nodeSchema;
