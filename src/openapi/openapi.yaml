@@ -5,31 +5,60 @@ info:
   license:
     name: MIT
 servers:
+  - url: https://api.factoryscopes.com/trace
   - url: https://trace.ph/api
 paths:
-  /registraion:
-    post:
-      summary: Register your device
-      operationId: register
+  /node:
+    get:
+      summary: Find node
+      operationId: find_node
+      description: Current implementation is that if `device_id` exists, the save endpoint will instead return the existing record.
       tags:
-        - Registration
+        - Node
+      parameters:
+        - name: node_id
+          in: query
+          type: string
+        - name: device_id
+          in: query
+          type: string
+        - name: person_id
+          in: query
+          type: string
+
+      responses:
+        '200':
+          description: A node object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/node'
+        '4XX': '#/components/responses/generic_error_response'
+    post:
+      summary: Save node
+      operationId: save_node
+      tags:
+        - Node
 
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NodeContact'
+              type: object
+              properties:
+                device_id:
+                  type: string
 
       responses:
         '200':
-          description: A paged array of pets
+          description: A node object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NodeContact'
+                $ref: '#/components/schemas/node'
         '4XX': '#/components/responses/generic_error_response'
 
-  /node_contacts:
+  /contacts:
     post:
       summary: Record a contact
       operationId: record_contact
@@ -40,15 +69,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NodeContact'
+              type: object
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/node_contact'
 
       responses:
         '201':
-          description: A paged array of pets
+          description: Array of `NodeContact` objects
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NodeContact'
+                type: array
+                items:
+                  $ref: '#/components/schemas/node_contact'
         '4XX': '#/components/responses/generic_error_response'
 
 components:
@@ -61,18 +97,25 @@ components:
             $ref: '#/components/schemas/generic_error'
 
   schemas:
-    Node:
+    node:
       type: object
-      required:
-        - device_id
-        - person_id
       properties:
+        _id:
+          type: string
         device_id:
           type: string
         person_id:
           type: string
+        node_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
 
-    NodeContact:
+    node_contact:
       type: object
       required:
         - type
@@ -114,6 +157,7 @@ components:
                 - Point
             coordinates:
               type: array
+              emample: [3, 4]
               items:
                 type: number
 
