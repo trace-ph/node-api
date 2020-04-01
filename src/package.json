@@ -26,16 +26,22 @@
     "joi": "^14.3.1",
     "link-module-alias": "^1.2.0",
     "mongoose": "^5.9.6",
-    "require-directory": "^2.1.1"
+    "morgan": "^1.10.0",
+    "require-directory": "^2.1.1",
+    "undefsafe": "^2.0.3",
+    "uuid": "^7.0.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
   },
   "_moduleAliases": {
     "~": ".",
+    "~logger": "./configs/winston.config.js",
     "~controllers": "./controllers",
     "~models": "./models",
     "~middlewares": "./middlewares",
-    "~validators": "./validators"
+    "~validators": "./validators",
+    "~services": "./services"
   }
 }
