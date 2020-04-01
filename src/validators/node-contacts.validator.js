@@ -19,7 +19,7 @@ const nodeSchema = {
 
           source_node_id: joi
             .string()
-            .pattern(UUID_REGEX)
+            .guid()
             .required(),
 
           node_pairs: joi
