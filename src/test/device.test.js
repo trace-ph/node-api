@@ -5,7 +5,7 @@ const request = require("supertest");
 const Device = require('../models/device.model');
 
 beforeAll(async () => {
-  const url = 'mongodb://localhost:27017/test-traceph';
+  const url = process.env.TEST_DB_CONN || 'mongodb://localhost:27017/test-traceph';
   await mongoose.connect(url, { useNewUrlParser: true });
 });
 
