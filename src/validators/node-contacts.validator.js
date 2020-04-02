@@ -1,5 +1,4 @@
-'use strict';
-
+// eslint-disable-next-line import/no-unresolved
 const joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 
 const nodeSchema = {
@@ -21,7 +20,7 @@ const nodeSchema = {
               'YYYY-MM-DD HH:mm:ss',
               'YYYY-MM-DD HH:mm:ss.SSS',
               'YYYY-MM-DD HH:mm:ssZ',
-              'YYYY-MM-DD HH:mm:ss.SSSZ'
+              'YYYY-MM-DD HH:mm:ss.SSSZ',
             ])
             .required(),
 
@@ -45,15 +44,15 @@ const nodeSchema = {
               coordinates: joi
                 .array()
                 .items(joi.number().required())
-                .required()
+                .required(),
             })
-            .required()
-        })
-      )
+            .required(),
+        }),
+      ),
     })
     .messages({
-      'string.pattern.base': `{#key} has an invalid format: "{#value}"`
-    })
+      'string.pattern.base': '{#key} has an invalid format: "{#value}"',
+    }),
 };
 
 module.exports = nodeSchema;

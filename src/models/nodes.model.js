@@ -1,7 +1,6 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 const NodeSchema = new Schema(
   {
@@ -10,11 +9,11 @@ const NodeSchema = new Schema(
 
     device_id: { type: Schema.Types.String, required: true },
 
-    person_id: { type: Schema.Types.String, required: true }
+    person_id: { type: Schema.Types.String, required: true },
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
-  }
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+  },
 );
 
 module.exports = mongoose.model('Node', NodeSchema);

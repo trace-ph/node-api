@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const server = require("../index");
-const request = require("supertest");
+const mongoose = require('mongoose');
+const request = require('supertest');
+const server = require('../index');
 
 const Device = require('../models/device.model');
 
@@ -10,14 +10,13 @@ beforeAll(async () => {
 });
 
 describe('Device', () => {
-
   afterEach(async () => {
     await Device.deleteMany();
   });
 
   it('should greet', async (done) => {
     const response = await request(server).post('/api/device/').send({
-      'device_id': 'F6:E6:65:88:4D:CA',
+      device_id: 'F6:E6:65:88:4D:CA',
     });
 
     expect(response.status).toBe(201);

@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const deviceValidator = require('~validators/device.validator');
 const schemaValidator = require('~middlewares/schemaValidator');
