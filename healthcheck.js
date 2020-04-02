@@ -1,18 +1,19 @@
-const http = require("http");
+const http = require('http');
+
+const { API_PORT } = process.env;
 
 const options = {
-	hostname : "0.0.0.0",
-	port : "80",
-	timeout : 3000,
+	hostname: '0.0.0.0',
+	port: API_PORT,
+	timeout: 3000,
 	path: '/healthcheck',
 	method: 'GET'
 };
 
-const request = http.request(options, (res) => {
+const request = http.request(options, res => {
 	if (res.statusCode == 200) {
 		process.exit(0);
-	}
-	else {
+	} else {
 		process.exit(1);
 	}
 });
