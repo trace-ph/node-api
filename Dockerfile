@@ -2,7 +2,6 @@ FROM    node:10.16.3-alpine
 
 WORKDIR /src
 COPY    src ./
-RUN     touch .env
 
 # Delete yarn and node_modules, re-run npm install before deleting npm
 RUN     rm -rf ./node_modules
