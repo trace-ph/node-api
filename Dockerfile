@@ -13,6 +13,6 @@ COPY    healthcheck.js /etc/health/
 HEALTHCHECK --interval=10s --timeout=3s CMD ["node", "/etc/health/healthcheck"]
 
 # Expose the service port
-EXPOSE  3000
+EXPOSE  80 3000
 
 CMD  ["node", "server.js"]
