@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
-const server = require("../index");
+const server = require("~/index");
 const request = require("supertest");
+const { getConnectionUrl } = require("~/configs/database.config");
 
 const Device = require('../models/device.model');
 
 beforeAll(async () => {
-  const url = process.env.TEST_DB_CONN || 'mongodb://localhost:27017/test-traceph';
-  await mongoose.connect(url, { useNewUrlParser: true });
+	const url = getConnectionUrl(true);
+	await mongoose.connect(url, { useNewUrlParser: true });
 });
 
 describe('Device', () => {
