@@ -4,8 +4,9 @@
   "description": "API for tech trace mobile application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
+    "start": "nodemon server.js",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch": "jest --watch --runInBand --detectOpenHandles",
     "preinstall": "command -v link-module-alias && link-module-alias clean || true",
     "postinstall": "link-module-alias"
   },
@@ -16,6 +17,9 @@
     "api",
     "express"
   ],
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "TracePH",
   "license": "ISC",
   "dependencies": {
@@ -34,7 +38,10 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "jest": "^25.2.4",
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2",
+    "yargs": "^15.3.1"
   },
   "_moduleAliases": {
     "~": ".",
