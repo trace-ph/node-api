@@ -5,9 +5,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_CONN: "mongodb://mongo:27017"
       API_PORT: 3000
+      DB_CONN: "mongodb://mongo:27017"
+      DB_NAME: "traceph"
+      HASH_KEY: "DEV_HASH_KEY"
   mongo:
     image: mongo:4.2.5
     ports:
-      - "27017:27017"
+      - "27017-27019:27017-27019"
