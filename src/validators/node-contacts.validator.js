@@ -1,6 +1,6 @@
 'use strict';
 
-const joi = require('@hapi/joi');
+const joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 
 const nodeSchema = {
   POST: joi
@@ -14,7 +14,15 @@ const nodeSchema = {
 
           timestamp: joi
             .date()
-            .iso()
+            .timestamp()
+            .format([
+              'YYYY-MM-DDTHH:mm:ss',
+              'YYYY-MM-DDTHH:mm:ss.SSS',
+              'YYYY-MM-DD HH:mm:ss',
+              'YYYY-MM-DD HH:mm:ss.SSS',
+              'YYYY-MM-DD HH:mm:ssZ',
+              'YYYY-MM-DD HH:mm:ss.SSSZ'
+            ])
             .required(),
 
           source_node_id: joi
