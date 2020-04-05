@@ -17,7 +17,7 @@ const config = (opts = {}) => {
   mongoose
     .connect(
       uri,
-      { ...opts, useNewUrlParser: true, useUnifiedTopology: true },
+      { useNewUrlParser: true, useUnifiedTopology: true, ...opts },
     )
     .then(() => logger.info('Connection to database successful!'))
     .catch((err) => logger.error(`Database error: ${err.message}`));
