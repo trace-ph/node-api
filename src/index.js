@@ -1,5 +1,3 @@
-'use strict';
-
 require('dotenv-safe').config();
 require('./configs/database.config').config();
 

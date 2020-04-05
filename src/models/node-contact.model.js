@@ -1,7 +1,6 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 const NodeContactSchema = new Schema(
   {
@@ -9,7 +8,7 @@ const NodeContactSchema = new Schema(
     type: {
       type: Schema.Types.String,
       enum: ['direct-bluetooth', 'direct-network', 'indirect', 'manual'],
-      required: true
+      required: true,
     },
 
     // Must be client generated since offline storage of data is assumed.
@@ -27,21 +26,21 @@ const NodeContactSchema = new Schema(
       type: {
         type: Schema.Types.String, // Don't do `{ location: { type: String } }`
         enum: ['Point'], // 'location.type' must be 'Point'
-        required: true
+        required: true,
       },
       coordinates: {
         type: [Schema.Types.Number],
-        required: true
-      }
+        required: true,
+      },
     },
 
     // Not clear on the TOR if this is determined on the client side or server side.
     // We'll assume that this is determined on the server.
-    ip: { type: Schema.Types.String, required: true }
+    ip: { type: Schema.Types.String, required: true },
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
-  }
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+  },
 );
 
 module.exports = mongoose.model('NodeContact', NodeContactSchema);

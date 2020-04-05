@@ -1,8 +1,4 @@
-'use strict';
-
-module.exports = (statusCode, message) => {
-	return {
-		status: statusCode,
-		message
-	};
-};
+module.exports = (statusCode, message) => ({
+  status: statusCode,
+  message,
+});
