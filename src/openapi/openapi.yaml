@@ -5,6 +5,7 @@ info:
   license:
     name: MIT
 servers:
+  - url: https://api.traceph.org/api
   - url: https://api.factoryscopes.com/trace
   - url: https://trace.ph/api
 paths:
@@ -58,7 +59,7 @@ paths:
                 $ref: '#/components/schemas/node'
         '4XX': '#/components/responses/generic_error_response'
 
-  /contacts:
+  /node_contacts:
     post:
       summary: Record a contact
       operationId: record_contact
