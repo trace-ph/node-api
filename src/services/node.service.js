@@ -1,16 +1,17 @@
 /* eslint camelcase: 0 */
 
-const { v5: uuidv5, v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
 const Node = require('~models/nodes.model');
 const logger = require('~logger');
 
 const save = async (device_id) => {
   logger.info(`Creating new node for device id {${device_id}}`);
   const node = { device_id, person_id: uuidv4() };
-  node.node_id = uuidv5(
-    `${device_id}${node.person_id}`,
-    process.env.HASH_KEY,
-  );
+  node.node_id = crypto.createHmac('sha256', process.env.HASH_KEY)
+    .update(`${device_id}${node.person_id}`)
+    .digest('hex')
+    .substr(0, 15);
   return new Node(node).save();
 };
 
