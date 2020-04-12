@@ -9,9 +9,6 @@ const createContacts = (request, response) => {
       contacts.map((contact) => ({
         ...contact,
 
-        // Sort node pairs
-        node_pairs: contact.node_pairs.sort(),
-
         // Get ip from the server
         ip: request.header('x-forwarded-for') || request.connection.remoteAddress,
       })),
