@@ -8,8 +8,6 @@ const NodeSchema = new Schema(
     node_id: { type: Schema.Types.String, required: true },
 
     device_id: { type: Schema.Types.String, required: true },
-
-    person_id: { type: Schema.Types.String, required: true },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
