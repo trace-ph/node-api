@@ -40,7 +40,6 @@
     "morgan": "^1.10.0",
     "require-directory": "^2.1.1",
     "undefsafe": "^2.0.3",
-    "uuid": "^7.0.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
