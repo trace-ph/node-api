@@ -19,7 +19,7 @@ const NodeContactSchema = new Schema(
 
     // As per TOR the pairings must be stored such that node_id_a < node_id_b.
     // A node_pair with a single data is allowed to handle 'Indirect' contact. See TOR 2c.
-    node_pair: { type: Schema.Types.String, required: true },
+    node_pairs: [{ type: Schema.Types.String, required: true }],
 
     rssi: { type: Schema.Types.Number, required: true },
 
