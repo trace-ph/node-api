@@ -1,4 +1,4 @@
-openapi: '3.0.0'
+openapi: "3.0.0"
 info:
   version: 0.0.0
   title: TracePH API
@@ -28,13 +28,13 @@ paths:
           type: string
 
       responses:
-        '200':
+        "200":
           description: A node object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/node'
-        '4XX': '#/components/responses/generic_error_response'
+                $ref: "#/components/schemas/node"
+        "4XX": "#/components/responses/generic_error_response"
     post:
       summary: Save node
       operationId: save_node
@@ -51,13 +51,13 @@ paths:
                   type: string
 
       responses:
-        '200':
+        "200":
           description: A node object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/node'
-        '4XX': '#/components/responses/generic_error_response'
+                $ref: "#/components/schemas/node"
+        "4XX": "#/components/responses/generic_error_response"
 
   /node_contacts:
     post:
@@ -75,18 +75,18 @@ paths:
                 contacts:
                   type: array
                   items:
-                    $ref: '#/components/schemas/node_contact'
+                    $ref: "#/components/schemas/node_contact_body"
 
       responses:
-        '201':
+        "201":
           description: Array of `NodeContact` objects
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/node_contact'
-        '4XX': '#/components/responses/generic_error_response'
+                  $ref: "#/components/schemas/node_contact"
+        "4XX": "#/components/responses/generic_error_response"
 
 components:
   responses:
@@ -95,7 +95,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/generic_error'
+            $ref: "#/components/schemas/generic_error"
 
   schemas:
     node:
@@ -116,6 +116,50 @@ components:
           type: string
           format: date-time
 
+    node_contact_body:
+      type: object
+      required:
+        - type
+        - timestamp
+        - source_node_id
+        - node_pair
+        - location
+      properties:
+        type:
+          type: string
+          description: Handling of different types of contact
+          enum:
+            - "direct-bluetooth"
+            - "direct-network"
+            - "indirect"
+            - "manual"
+        timestamp:
+          type: string
+          description: Must be client generated since offline storage of data is assumed.
+          format: datetime
+        source_node_id:
+          description: This field refer to the node who sent this record.
+          type: string
+        node_pair:
+          description: Target node pair.
+          type: string
+        location:
+          description: Stored in GeoJSON format
+          type: object
+          required:
+            - type
+            - coordinates
+          properties:
+            type:
+              type: string
+              enum:
+                - Point
+            coordinates:
+              type: array
+              emample: [3, 4]
+              items:
+                type: number
+
     node_contact:
       type: object
       required:
@@ -129,10 +173,10 @@ components:
           type: string
           description: Handling of different types of contact
           enum:
-            - 'direct-bluetooth'
-            - 'direct-network'
-            - 'indirect'
-            - 'manual'
+            - "direct-bluetooth"
+            - "direct-network"
+            - "indirect"
+            - "manual"
         timestamp:
           type: string
           description: Must be client generated since offline storage of data is assumed.
