@@ -26,12 +26,20 @@ const nodeSchema = {
 
           source_node_id: joi
             .string()
-            .guid()
+            .max(15)
             .required(),
 
-          node_pairs: joi
-            .array()
-            .items(joi.string().guid())
+          node_pair: joi
+            .string()
+            .max(15)
+            .required(),
+
+          rssi: joi
+            .number()
+            .required(),
+
+          txPower: joi
+            .number()
             .required(),
 
           location: joi

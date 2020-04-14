@@ -21,6 +21,10 @@ const NodeContactSchema = new Schema(
     // A node_pair with a single data is allowed to handle 'Indirect' contact. See TOR 2c.
     node_pairs: [{ type: Schema.Types.String, required: true }],
 
+    rssi: { type: Schema.Types.Number, required: true },
+
+    txPower: { type: Schema.Types.Number, required: true },
+
     // Location stored in GeoJSON format
     location: {
       type: {
