@@ -45,14 +45,15 @@ jobs:
       uses: appleboy/ssh-action@master
       env:
         DB_CONN: ${{ secrets.DB_CONN }}
+        DB_NAME: ${{ secrets.DB_NAME }}
         API_PORT: ${{ secrets.API_PORT }}
-        API_URL: ${{ secrets.API_URL }}
+        HASH_KEY: ${{ secrest.HASH_KEY }}
       with:
         host: ${{ secrets.SSH_HOST }}
         USERNAME: ${{ secrets.SSH_USERNAME }}
         KEY: ${{ secrets.SSH_KEY }}
         script_stop: true
-        envs: DB_CONN,API_PORT,API_URL
+        envs: DB_CONN,DB_NAME,API_PORT,HASH_KEY
         script: |
           docker ps -aq --filter "name=traceph" | grep -q . && docker stop traceph && docker rm -fv traceph
-          docker run --name traceph --env API_PORT=$API_PORT --env DB_CONN=$DB_CONN --env API_URL=$API_URL -d -p $API_PORT:$API_PORT ${{ secrets.DOCKER_USERNAME }}/traceph:latest
+          docker run --name traceph --env API_PORT=$API_PORT --env DB_CONN=$DB_CONN --env DB_NAME=$DB_NAME --env HASH_KEY=$HASH_KEY -d -p $API_PORT:$API_PORT ${{ secrets.DOCKER_USERNAME }}/traceph:latest
