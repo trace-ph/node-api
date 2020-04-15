@@ -36,6 +36,7 @@
     "express": "^4.17.1",
     "joi": "^14.3.1",
     "link-module-alias": "^1.2.0",
+    "moment": "^2.24.0",
     "mongoose": "^5.9.6",
     "morgan": "^1.10.0",
     "require-directory": "^2.1.1",
@@ -60,6 +61,7 @@
     "~models": "./models",
     "~middlewares": "./middlewares",
     "~validators": "./validators",
-    "~services": "./services"
+    "~services": "./services",
+    "~helpers": "./helpers"
   }
 }
