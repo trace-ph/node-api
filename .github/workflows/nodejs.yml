@@ -47,7 +47,7 @@ jobs:
         DB_CONN: ${{ secrets.DB_CONN }}
         DB_NAME: ${{ secrets.DB_NAME }}
         API_PORT: ${{ secrets.API_PORT }}
-        HASH_KEY: ${{ secrest.HASH_KEY }}
+        HASH_KEY: ${{ secrets.HASH_KEY }}
       with:
         host: ${{ secrets.SSH_HOST }}
         USERNAME: ${{ secrets.SSH_USERNAME }}
