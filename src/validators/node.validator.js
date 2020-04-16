@@ -2,15 +2,15 @@
 
 const joi = require('@hapi/joi');
 
-const MAC_ADDRESS_REGEX = /^(?:[0-9a-fA-F]{2}\:){5}[0-9a-fA-F]{2}$/;
+const deviceIdSchema = joi.alternatives(
+  joi.string().guid(),
+  joi.string().hex(),
+);
 
 const nodeSchema = {
   POST: joi
     .object({
-      device_id: joi
-        .string()
-        .pattern(MAC_ADDRESS_REGEX)
-        .required(),
+      device_id: deviceIdSchema.required(),
     })
     .messages({
       'string.pattern.base': '{#key} has an invalid format: "{#value}"',
@@ -21,10 +21,7 @@ const nodeSchema = {
         .string()
         .max(15)
         .required(),
-      device_id: joi
-        .string()
-        .pattern(MAC_ADDRESS_REGEX)
-        .required(),
+      device_id: deviceIdSchema.required(),
     })
     .messages({
       'string.pattern.base': '{#key} has an invalid format: "{#value}"',
@@ -32,7 +29,7 @@ const nodeSchema = {
   GET: joi
     .object({
       node_id: joi.string().max(15),
-      device_id: joi.string().pattern(MAC_ADDRESS_REGEX),
+      device_id: deviceIdSchema,
     })
     .or('node_id', 'device_id')
     .messages({
