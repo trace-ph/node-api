@@ -12,8 +12,7 @@ const secrets = Object.freeze({
 });
 
 const authenticate = (req, res, next) => {
-  const data = req.rawBody.toString();
-
+  const data = req.body ? JSON.stringify(req.body) : '';
   const md5Hash = hash.md5(data);
 
   // Get stuff from header
