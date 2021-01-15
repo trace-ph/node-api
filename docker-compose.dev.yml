@@ -1,14 +1,22 @@
-version: "2"
+version: "3"
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: npm run dev
     ports:
       - "8080:8080"
     depends_on:
       - mongo
+    links:
+      - mongo
     environment:
       - DATABASE_CONNECTION=mongodb://mongo:27017
       - API_PORT=8080
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
   mongo:
     image: mongo
     ports:
@@ -17,3 +25,4 @@ services:
       - data-volume:/data/db
 volumes:
   data-volume:
+  nodemodules:
