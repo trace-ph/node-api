@@ -2,9 +2,9 @@
 
 require('dotenv-safe').config();
 
-const { API_PORT, API_URL } = process.env;
+const { API_PORT } = process.env;
 const express = require('express');
-const bodyParser = require("body-parser"); 
+const bodyParser = require("body-parser");
 
 const { mobile, ...routes } = require('./routes');
 const schemas = require('./schemas')
