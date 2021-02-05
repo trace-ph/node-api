@@ -4,8 +4,12 @@
   "description": "API for tech trace mobile application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon server.js",
+    "lint": "eslint .",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch": "jest --watch --runInBand --detectOpenHandles",
+    "preinstall": "command -v link-module-alias && link-module-alias clean || true",
+    "postinstall": "link-module-alias"
   },
   "keywords": [
     "traceph",
@@ -14,17 +18,48 @@
     "api",
     "express"
   ],
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "author": "TracePH",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@hapi/joi-date": "^2.0.1",
     "body-parser": "^1.19.0",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^14.3.1",
+    "link-module-alias": "^1.2.0",
     "mongoose": "^5.9.6",
-    "require-directory": "^2.1.1"
+    "morgan": "^1.10.0",
+    "require-directory": "^2.1.1",
+    "undefsafe": "^2.0.3",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "husky": "^4.2.3",
+    "jest": "^25.2.4",
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2",
+    "uri-js": "^4.2.2",
+    "yargs": "^15.3.1"
+  },
+  "_moduleAliases": {
+    "~": ".",
+    "~logger": "./configs/winston.config.js",
+    "~controllers": "./controllers",
+    "~models": "./models",
+    "~middlewares": "./middlewares",
+    "~validators": "./validators",
+    "~services": "./services"
   }
 }

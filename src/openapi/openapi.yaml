@@ -1,0 +1,210 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.0
+  title: TracePH API
+  license:
+    name: MIT
+servers:
+  - url: https://api.traceph.org/api
+  - url: https://api.factoryscopes.com/trace
+  - url: https://trace.ph/api
+paths:
+  /node:
+    get:
+      summary: Find node
+      operationId: find_node
+      description: Current implementation is that if `device_id` exists, the save endpoint will instead return the existing record.
+      tags:
+        - Node
+      parameters:
+        - name: node_id
+          in: query
+          type: string
+        - name: device_id
+          in: query
+          type: string
+        - name: person_id
+          in: query
+          type: string
+
+      responses:
+        "200":
+          description: A node object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/node"
+        "4XX": "#/components/responses/generic_error_response"
+    post:
+      summary: Save node
+      operationId: save_node
+      tags:
+        - Node
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_id:
+                  type: string
+
+      responses:
+        "200":
+          description: A node object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/node"
+        "4XX": "#/components/responses/generic_error_response"
+
+  /node_contacts:
+    post:
+      summary: Record a contact
+      operationId: record_contact
+      tags:
+        - Contact Recording
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/node_contact_body"
+
+      responses:
+        "201":
+          description: Array of `NodeContact` objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/node_contact"
+        "4XX": "#/components/responses/generic_error_response"
+
+components:
+  responses:
+    generic_error_response:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/generic_error"
+
+  schemas:
+    node:
+      type: object
+      properties:
+        _id:
+          type: string
+        device_id:
+          type: string
+        person_id:
+          type: string
+        node_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    node_contact_body:
+      type: object
+      required:
+        - type
+        - timestamp
+        - source_node_id
+        - node_pair
+        - location
+      properties:
+        type:
+          type: string
+          description: Handling of different types of contact
+          enum:
+            - "direct-bluetooth"
+            - "direct-network"
+            - "indirect"
+            - "manual"
+        timestamp:
+          type: string
+          description: Must be client generated since offline storage of data is assumed.
+          format: datetime
+        source_node_id:
+          description: This field refer to the node who sent this record.
+          type: string
+        node_pair:
+          description: Target node pair.
+          type: string
+        location:
+          description: Stored in GeoJSON format
+          type: object
+          required:
+            - type
+            - coordinates
+          properties:
+            type:
+              type: string
+              enum:
+                - Point
+            coordinates:
+              type: array
+              emample: [3, 4]
+              items:
+                type: number
+
+    node_contact:
+      type: object
+      required:
+        - type
+        - timestamp
+        - source_node_id
+        - node_pairs
+        - location
+      properties:
+        type:
+          type: string
+          description: Handling of different types of contact
+          enum:
+            - "direct-bluetooth"
+            - "direct-network"
+            - "indirect"
+            - "manual"
+        timestamp:
+          type: string
+          description: Must be client generated since offline storage of data is assumed.
+          format: datetime
+        source_node_id:
+          description: This field refer to the node who sent this record.
+          type: string
+        node_pairs:
+          description: A node_pair with a single data is allowed to handle 'Indirect' contact. See TOR 2c.
+          type: array
+          items:
+            type: string
+        location:
+          description: Stored in GeoJSON format
+          type: object
+          required:
+            - type
+            - coordinates
+          properties:
+            type:
+              type: string
+              enum:
+                - Point
+            coordinates:
+              type: array
+              emample: [3, 4]
+              items:
+                type: number
+
+    generic_error:
+      type: object

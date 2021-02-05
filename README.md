@@ -41,8 +41,17 @@ docker run --name={identifier} -d -p 80:{port to access locally} trace-ph:{semve
 ```
 
 ## Running the tests
+Run tests once
 
-Coming soon™
+```
+npm test
+```
+
+Automatically run tests during code changes
+
+```
+npm run test:watch
+```
 
 ## Deployment
 
