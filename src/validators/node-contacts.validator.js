@@ -42,19 +42,20 @@ const nodeSchema = {
             .number()
             .required(),
 
-          location: joi
-            .object({
-              type: joi
-                .string()
-                .valid('Point')
-                .required(),
+          // location: joi
+          //   .object({
+          //     type: joi
+          //       .string()
+          //       .valid('Point')
+          //       .required(),
+		  //
+          //     coordinates: joi
+          //       .array()
+          //       .items(joi.number().required())
+          //       .required(),
+          //   })
+          //   .required(),
 
-              coordinates: joi
-                .array()
-                .items(joi.number().required())
-                .required(),
-            })
-            .required(),
         }),
       ),
     })

@@ -26,17 +26,17 @@ const NodeContactSchema = new Schema(
     txPower: { type: Schema.Types.Number, required: true },
 
     // Location stored in GeoJSON format
-    location: {
-      type: {
-        type: Schema.Types.String, // Don't do `{ location: { type: String } }`
-        enum: ['Point'], // 'location.type' must be 'Point'
-        required: true,
-      },
-      coordinates: {
-        type: [Schema.Types.Number],
-        required: true,
-      },
-    },
+    // location: {
+    //   type: {
+    //     type: Schema.Types.String, // Don't do `{ location: { type: String } }`
+    //     enum: ['Point'], // 'location.type' must be 'Point'
+    //     required: true,
+    //   },
+    //   coordinates: {
+    //     type: [Schema.Types.Number],
+    //     required: true,
+    //   },
+    // },
 
     // Not clear on the TOR if this is determined on the client side or server side.
     // We'll assume that this is determined on the server.
