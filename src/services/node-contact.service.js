@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 require('../configs/database.config').config();
+const Nodes = require('~models/nodes.model');
 const NodeContacts = require('~models/node-contact.model');
+const Calibration = require('~models/calibration.model');
 
 // TODO: FIX TIMEZONES!
 
@@ -30,7 +32,7 @@ async function getContactsInRange(
       timestamp: { $gte: reference_date, $lte: result_date },
       rssi: { $gt: dist_range[0], $lte: dist_range[1] },
     })
-    .select(['node_pairs', 'timestamp'])
+    .select(['node_pairs', 'timestamp', 'rssi', 'source_node_id'])
     // .where('timestamp').gt(reference_date).lt(result_date)
     // .where('rssi')
     .exec();
@@ -93,9 +95,22 @@ function convertToDuration(docs, node_id) {
   return docs_periph;
 }
 
-function rssiCalibration(res) {
-  console.log('RSSI calibration');
-  return res;
+async function rssiCalibration(res) {
+	console.log('RSSI calibration');
+
+	// Use node_ID of pair to get the corresponding RSSI correction and txPower
+	// based on its device model
+	for(i = 0; i < res.length; i++){
+		let contact = res[i];
+		let pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
+		let node = await Nodes.findOne({ node_id: pairNode_id });
+		let deviceInfo = await Calibration.findOne({ ' model': node.device_model });
+
+		// Replace RSSI with attenuation [1]
+		res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
+	}
+
+	return res;
 }
 
 module.exports = {
@@ -103,3 +118,8 @@ module.exports = {
   convertToDuration,
   rssiCalibration,
 };
+
+/*
+References:
+[1]	https://developers.google.com/android/exposure-notifications/ble-attenuation-overview#attenuations_as_distance_proxy
+*/

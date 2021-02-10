@@ -31,7 +31,7 @@ async function getCloseContacts(node_id, ref_date, result_date) {
 
   console.log(`Periph dur: ${JSON.stringify(proximal)}`);
   // proximal = proximal.filter(item => {item.duration >= 15});
-  // window_contacts = rssiCalibration(window_contacts);
+  // let window_contacts = await rssiCalibration(window_contacts);
 
   return { proximal };
 }
