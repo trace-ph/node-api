@@ -103,8 +103,8 @@ async function rssiCalibration(res) {
 	for(i = 0; i < res.length; i++){
 		let contact = res[i];
 		let pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
-		let node = await Nodes.findOne({ node_id: pairNode_id });
-		let deviceInfo = await Calibration.findOne({ ' model': node.device_model });
+		let node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
+		let deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
 		// Replace RSSI with attenuation [1]
 		res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);

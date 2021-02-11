@@ -15,4 +15,6 @@ const CalibrationSchema = new Schema({
 	'calibration confidence': { type: Schema.Types.Number, required: true },
 });
 
+CalibrationSchema.index({ ' model': 1 });
+
 module.exports = mongoose.model('calibration', CalibrationSchema);
