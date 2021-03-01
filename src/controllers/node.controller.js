@@ -3,7 +3,7 @@ const errorResponse = require('~models/error-response.model');
 
 const save = (req, res) => {
   // eslint-disable-next-line camelcase
-  const { device_id } = req.body;
+  const { device_id, device_model } = req.body;
 
   nodeService
     .find({ device_id })
@@ -12,7 +12,7 @@ const save = (req, res) => {
         return res.status(200).send(nodeList[0]);
       }
       return nodeService
-        .save(device_id)
+        .save(device_id, device_model)
         .then((savedNode) => res.status(200).send(savedNode))
         .catch((err) => res.status(500).send(errorResponse(500, err.message)));
     })
