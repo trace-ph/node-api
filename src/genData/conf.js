@@ -33,7 +33,9 @@ const node_C = 'C';
 const node_D = 'D';
 
 // Date to start off to
-var date = new Date('2021-02-01');
+var date = new Date();
+date.setDate(date.getDate() - 40);
+
 
 
 module.exports = {
