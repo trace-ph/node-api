@@ -4,24 +4,20 @@ require('../configs/database.config').config();
 //Import Schema model (nodecontact db)
 const NodeContacts = require('~models/node-contact.model');
 
-console.log("Deleting QR codes...");
-
 //Import CRON and SHELL for Node.js
 const cron = require('node-cron');
 const shell = require('shelljs');
 
 
 
-var d = new Date();
-var ddate = new Date();
-ddate.setDate(d.getDate() - 20);
-
-
+var date = new Date();
+var older_date = new Date();
+older_date.setDate(date.getDate() - 20);
 
 cron.schedule("0 0 * * SUN", function(){
 
-	NodeContacts.remove({ timestamp: {$lt : ddate } }, function(err) {
-  		console.log("Successfully Deleted N datas");
+	NodeContacts.remove({ timestamp: {$lt : older_date } }, function(err) {
+  		console.log("Deletion Complete!");
 
 	});
 });
