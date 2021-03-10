@@ -12,8 +12,7 @@ const nodeSchema = {
       patient_info: joi
         .object({
           test_result: joi
-            .string()
-            .valid('positive', 'negative')
+            .bool()
             .required(),
 
           test_result_date: joi
@@ -23,10 +22,10 @@ const nodeSchema = {
             ])
             .required(),
 
-          symptom: joi
-            .string()
-            .valid('symptomatic', 'asymptomatic', 'not-applicable')
-            .required(),
+          // symptom: joi
+          //   .string()
+          //   .valid('symptomatic', 'asymptomatic', 'not-applicable')
+          //   .required(),
 
           reference_date: joi
             .date()

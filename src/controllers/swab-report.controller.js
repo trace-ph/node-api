@@ -7,33 +7,30 @@ const { rssiCalibration } = nodeContactService;
 
 // SAMPLE INPUT:
 // const node_id = '0ea94fee138c58c';
+// const node_id = 'D';
 // const ref_date = new Date('2021-02-7'); // onset of illness, x
 // const result_date = new Date('2021-02-11'); // x+a
 
 
 // Categorize contacts to direct or proximal based on RSSI attenuation
 function filterContacts(doc) {
-	let direct = [];
-	let proximal = [];
+  const direct = [];
+  const proximal = [];
 
-	doc.forEach((contact) => {
-		if (contact.rssi <= 27)
-			direct.push(contact);
-		else if (contact.rssi > 27 && contact.rssi <= 51)
-			proximal.push(contact);
-	});
+  doc.forEach((contact) => {
+    if (contact.rssi <= 27) direct.push(contact);
+    else if (contact.rssi > 27 && contact.rssi <= 51) proximal.push(contact);
+  });
 
-	return { direct, proximal };
+  return { direct, proximal };
 }
 
 // Filter out the actual proximal contacts
-function filterProximal(doc){
-	let res = {};
-	for( let [node_id, duration] of Object.entries(doc) )
-		if(duration > 15)
-			res[node_id] = duration;
+function filterProximal(doc) {
+  const res = {};
+  for (const [node_id, duration] of Object.entries(doc)) if (duration > 15) res[node_id] = duration;
 
-	return res;
+  return res;
 }
 
 // get close contacts
@@ -79,4 +76,18 @@ async function notifyCloseContacts(node_id, ref_date, result_date) {
   console.log(contacts.proximal);
 }
 
-notifyCloseContacts(node_id, ref_date, result_date);
+// Handles the report from auth-api
+function swabReport(request, response) {
+  console.log(request.body);
+  const { node_id, patient_info } = request.body;
+
+  if (patient_info.test_result) notifyCloseContacts(node_id, new Date(patient_info.reference_date), new Date(patient_info.test_result_date));
+
+  response.status(201).json({ success: true });
+}
+
+// notifyCloseContacts(node_id, ref_date, result_date);
+
+module.exports = {
+  swabReport,
+};

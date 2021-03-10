@@ -33,7 +33,7 @@ const node_C = 'C';
 const node_D = 'D';
 
 // Date to start off to
-var date = new Date('2021-02-01');
+const date = new Date('2021-02-11');
 
 
 module.exports = {
@@ -50,7 +50,7 @@ module.exports = {
 	node_C,
 	node_D,
 	date,
-}
+};
 
 /*
 References:
