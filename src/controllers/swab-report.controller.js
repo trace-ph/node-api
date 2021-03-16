@@ -4,6 +4,7 @@ const nodeContactService = require('~services/node-contact.service');
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
 const { rssiCalibration } = nodeContactService;
+const { notified } = nodeContactService;
 
 // SAMPLE INPUT:
 // const node_id = '0ea94fee138c58c';
@@ -70,7 +71,13 @@ async function getCloseContacts(node_id, ref_date, result_date) {
 // notify close contacts
 async function notifyCloseContacts(node_id, ref_date, result_date) {
   const contacts = await getCloseContacts(node_id, ref_date, result_date);
+
   // insert notification function here
+
+  // Insert those who are notified for the day
+  notified(contacts.direct, 'direct');
+  notified(contacts.proximal, 'proximal');
+
   console.log('NOTIFIED CCs');
   console.log(contacts.direct);
   console.log(contacts.proximal);

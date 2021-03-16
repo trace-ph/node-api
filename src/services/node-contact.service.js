@@ -3,6 +3,7 @@
 const Nodes = require('~models/nodes.model');
 const NodeContacts = require('~models/node-contact.model');
 const Calibration = require('~models/calibration.model');
+const NotifiedContacts = require('~models/notified-contact.model');
 
 // TODO: FIX TIMEZONES!
 
@@ -113,10 +114,28 @@ async function rssiCalibration(res) {
   return res;
 }
 
+
+// Saves who are notified contacts
+function notified(res, type){
+	Object.keys(res).forEach(async (node_id) => {
+		let exist = await NotifiedContacts.exists({ node_id: node_id });
+		if(!exist){
+			NotifiedContacts.create({
+				node_id: node_id,
+				contact: type,
+			})
+			// .then((res) => console.log(res))
+			.catch((err) => console.error(err));
+		}
+	});
+}
+
+
 module.exports = {
   getContactsInRange,
   convertToDuration,
   rssiCalibration,
+  notified
 };
 
 /*
