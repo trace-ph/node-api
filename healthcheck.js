@@ -1,9 +1,9 @@
 const http = require("http");
 
 const options = {
-	hostname : "0.0.0.0",
-	port : "80",
-	timeout : 3000,
+	hostname: "0.0.0.0",
+	port: "8080",
+	timeout: 3000,
 	path: '/healthcheck',
 	method: 'GET'
 };
@@ -17,7 +17,7 @@ const request = http.request(options, (res) => {
 	}
 });
 
-request.on('error', function(err) {
+request.on('error', function (err) {
 	process.exit(1);
 });
 
