@@ -14,6 +14,10 @@ const NotifiedContactSchema = new Schema({
 		required: true
 	},
 
+	// If the user received this notification
+	// False: User has not received the notif; True: User received the notif
+	notif: { type: Schema.Types.Boolean, required: true },
+
 }, {
 
     timestamps: { createdAt: 'created_at' },

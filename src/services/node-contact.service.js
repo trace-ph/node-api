@@ -123,6 +123,7 @@ function notified(res, type){
 			NotifiedContacts.create({
 				node_id: node_id,
 				contact: type,
+				notif: false,
 			})
 			// .then((res) => console.log(res))
 			.catch((err) => console.error(err));
