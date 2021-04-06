@@ -12,6 +12,14 @@ router.post('/', (req, res) => {
 	const { node_id } = req.body;
 
 	connections[node_id] = res;
+
+	// If connection is already disconnected, remove in connections list
+	req.on("close", () => {
+		// Delete in connections list
+		delete connections[node_id];
+
+		// console.log(`${node_id} disconnected`);
+	});
 });
 
 
@@ -40,8 +48,6 @@ setTimeout(function check() {
 				logger.info(`${node_id} is notified`);
 			}
 		});
-
-		// TODO: If res is already disconnected, remove in connections list
 	}
 
 	setTimeout(check, delay);
