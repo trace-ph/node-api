@@ -11,7 +11,15 @@ const connections = {};
 router.post('/', (req, res) => {
 	const { node_id } = req.body;
 
-	// console.log(`${node_id} connected`);
+	// Disregard null node_id
+	if(node_id == null)
+		return res.status(400).send();
+
+	// Handle duplicates
+	if(connections[node_id] != null)
+		connections[node_id].status(400).send();
+
+	logger.info(`${node_id} connected`);
 	connections[node_id] = res;
 
 	// If connection is already disconnected, remove in connections list
@@ -19,12 +27,12 @@ router.post('/', (req, res) => {
 		// Delete in connections list
 		delete connections[node_id];
 
-		// console.log(`${node_id} disconnected`);
+		logger.info(`${node_id} disconnected`);
 	});
 });
 
 
-const delayNotif = 1000 * 60;				// 1 second * multiplier
+const delayNotif = 1000 * 60;				// 1 minute
 
 // Checks if there's notification to be sent every 1 minute
 setTimeout(function check() {
@@ -37,7 +45,9 @@ setTimeout(function check() {
 
 			// Send notif if the user wasn't notified yet
 			if(!doc.notif){
-				res.status(200).send("You have been exposed");
+				let date = formatDate(doc.created_at);
+				let message = `We have determined that you are a ${doc.contact} contact on ${date}.\nPlease contact your designated health personnel or contact tracer of your area.`;
+				res.status(200).send(message);
 
 				// Delete in connections list
 				delete connections[node_id];
@@ -62,6 +72,25 @@ router.post('/confirm', (req, res) => {
 		res.status(200).send("Confirmation received");
 	});
 });
+
+
+const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function formatDate(createdDate){
+	let m = month[createdDate.getMonth()];
+	let d = createdDate.getDate();
+	let y = createdDate.getFullYear();
+	let h = createdDate.getHours();
+	let min = createdDate.getMinutes();
+	if(h > 12 && (h % 12) != 0)
+		return date = m + ' ' + d + ', ' + y + ' ' + (h % 12) + ':' + min + 'PM';
+	else if(h > 12 && (h % 12) == 0)
+		return date = m + ' ' + d + ', ' + y + ' 12:' + min + 'PM';
+	else if(h < 12 && h != 0)
+		return date = m + ' ' + d + ', ' + y + ' ' + h + ':' + min + 'AM';
+	else
+		return date = m + ' ' + d + ', ' + y + ' 12:' + min + 'AM';
+}
 
 
 module.exports = router;
