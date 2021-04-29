@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const nodeContactService = require('~services/node-contact.service');
-const swabReportModel = require('~model/swab-report.model');
+const swabReportModel = require('~models/swab-report.model');
 
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
