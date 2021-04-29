@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 const nodeContactService = require('~services/node-contact.service');
+const swabReportModel = require('~models/swab-report.model');
 
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
@@ -86,11 +87,18 @@ async function notifyCloseContacts(node_id, ref_date, result_date) {
 // Handles the report from auth-api
 function swabReport(request, response) {
   console.log(request.body);
-  const { node_id, patient_info } = request.body;
+  const { node_id } = request.body;
 
-  if (patient_info.test_result) notifyCloseContacts(node_id, new Date(patient_info.reference_date), new Date(patient_info.test_result_date));
+  // Get patient_info
+  swabReportModel.findOne({ node_id: node_id })
+  .then((doc) => {
+	let patient_info = doc.patient_info;
 
-  response.status(201).json({ success: true });
+  	if (patient_info.test_result)
+		notifyCloseContacts(node_id, new Date(patient_info.reference_date), new Date(patient_info.test_result_date));
+
+  	response.status(201).json({ success: true });
+  });
 }
 
 // notifyCloseContacts(node_id, ref_date, result_date);
