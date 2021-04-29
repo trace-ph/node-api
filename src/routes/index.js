@@ -12,7 +12,12 @@ module.exports = (server) => {
   server.use(`${BASE_ROUTE}/swab_report`, SwabReportRoute);
 
   // !DO NOT REMOVE OR EDIT BEYOND THIS LINE!
-  server.use('/docs', DocsRoute);
+
+  // Don't serve in production
+  if (process.env.NODE_ENV !== 'production') {
+    server.use('/docs', DocsRoute);
+  }
+
   server.get('/healthcheck', (req, res, next) => {
     res.status(200).send('OK');
     return next();

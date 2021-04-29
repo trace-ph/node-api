@@ -8,4 +8,5 @@ src/.env             # no need for the development env file
 # git stuffs are not needed
 .git
 .gitignore
+node_modules
 __test__
