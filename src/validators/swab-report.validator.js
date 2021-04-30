@@ -9,33 +9,32 @@ const nodeSchema = {
         .max(15)
         .required(),
 
-      patient_info: joi
-        .object({
-          test_result: joi
-            .string()
-            .valid('positive', 'negative')
-            .required(),
-
-          test_result_date: joi
-            .date()
-            .format([
-              'YYYY-MM-DD',
-            ])
-            .required(),
-
-          symptom: joi
-            .string()
-            .valid('symptomatic', 'asymptomatic', 'not-applicable')
-            .required(),
-
-          reference_date: joi
-            .date()
-            .format([
-              'YYYY-MM-DD',
-            ])
-            .required(),
-        })
-        .required(),
+      // patient_info: joi
+      //   .object({
+      //     test_result: joi
+      //       .bool()
+      //       .required(),
+	  //
+      //     test_result_date: joi
+      //       .date()
+      //       .format([
+      //         'YYYY-MM-DD',
+      //       ])
+      //       .required(),
+	  //
+      //     // symptom: joi
+      //     //   .string()
+      //     //   .valid('symptomatic', 'asymptomatic', 'not-applicable')
+      //     //   .required(),
+	  //
+      //     reference_date: joi
+      //       .date()
+      //       .format([
+      //         'YYYY-MM-DD',
+      //       ])
+      //       .required(),
+      //   })
+      //   .required(),
     })
     .messages({
       'string.pattern.base': '{#key} has an invalid format: "{#value}"',

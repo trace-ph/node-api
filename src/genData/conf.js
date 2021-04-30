@@ -52,7 +52,7 @@ module.exports = {
 	node_C,
 	node_D,
 	date,
-}
+};
 
 /*
 References:

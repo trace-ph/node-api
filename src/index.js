@@ -9,7 +9,11 @@ const { morganLogger } = require('./middlewares/morganLogger');
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  },
+}));
 app.use(morganLogger);
 
 // Load routes

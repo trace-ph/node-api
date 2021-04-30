@@ -1,8 +1,9 @@
 /* eslint-disable camelcase */
-require('../configs/database.config').config();
+// require('../configs/database.config').config();
 const Nodes = require('~models/nodes.model');
 const NodeContacts = require('~models/node-contact.model');
 const Calibration = require('~models/calibration.model');
+const NotifiedContacts = require('~models/notified-contact.model');
 
 // TODO: FIX TIMEZONES!
 
@@ -96,30 +97,50 @@ function convertToDuration(docs, node_id) {
 }
 
 async function rssiCalibration(res) {
-	console.log('RSSI calibration');
+  console.log('RSSI calibration');
 
-	// Use node_ID of pair to get the corresponding RSSI correction and txPower
-	// based on its device model
-	for(i = 0; i < res.length; i++){
-		let contact = res[i];
-		let pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
-		let node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
-		let deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
+  // Use node_ID of pair to get the corresponding RSSI correction and txPower
+  // based on its device model
+  for (i = 0; i < res.length; i++) {
+    const contact = res[i];
+    const pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
+    const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
+    const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
-		// Replace RSSI with attenuation [1]
-		res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
-	}
+    // Replace RSSI with attenuation [1]
+    res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
+  }
 
-	return res;
+  return res;
 }
+
+
+// Saves who are notified contacts
+function notified(res, type){
+	Object.keys(res).forEach(async (node_id) => {
+		let exist = await NotifiedContacts.exists({ node_id: node_id });
+		if(!exist){
+			NotifiedContacts.create({
+				node_id: node_id,
+				contact: type,
+				notif: false,
+			})
+			// .then((res) => console.log(res))
+			.catch((err) => console.error(err));
+		}
+	});
+}
+
 
 module.exports = {
   getContactsInRange,
   convertToDuration,
   rssiCalibration,
+  notified
 };
 
 /*
 References:
 [1]	https://developers.google.com/android/exposure-notifications/ble-attenuation-overview#attenuations_as_distance_proxy
+[2] https://itnext.io/performance-tips-for-mongodb-mongoose-190732a5d382
 */
