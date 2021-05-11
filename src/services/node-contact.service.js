@@ -107,6 +107,10 @@ async function rssiCalibration(res) {
     const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
     const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
+	// If not within the calibration data, assume iOS device; Therefore no rssi calibration
+	if(deviceInfo == undefined || deviceInfo == null)
+		continue;
+
     // Replace RSSI with attenuation [1]
     res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
   }
