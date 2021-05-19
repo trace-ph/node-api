@@ -1,45 +1,16 @@
 /* eslint-disable camelcase */
 const nodeContactService = require('~services/node-contact.service');
-const swabReportModel = require('~models/swab-report.model');
+const SwabReports = require('~models/swab-report.model');
 
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
 const { rssiCalibration } = nodeContactService;
 const { notified } = nodeContactService;
+const { filterContacts, filterProximal } = nodeContactService;
 
-// SAMPLE INPUT:
-// const node_id = '0ea94fee138c58c';
-// const node_id = 'D';
-// const ref_date = new Date('2021-02-7'); // onset of illness, x
-// const result_date = new Date('2021-02-11'); // x+a
-
-
-// Categorize contacts to direct or proximal based on RSSI attenuation
-function filterContacts(doc) {
-  const direct = [];
-  const proximal = [];
-
-  doc.forEach((contact) => {
-    if (contact.rssi <= 27) direct.push(contact);
-    else if (contact.rssi > 27 && contact.rssi <= 51) proximal.push(contact);
-  });
-
-  return { direct, proximal };
-}
-
-// Filter out the actual proximal contacts
-function filterProximal(doc) {
-  const res = {};
-  for (const [node_id, duration] of Object.entries(doc)) if (duration > 15) res[node_id] = duration;
-
-  return res;
-}
 
 // get close contacts
 async function getCloseContacts(node_id, ref_date, result_date) {
-  // let direct= await getContactsInRange(node_id,
-  // ref_date, result_date, [-35,-30]);
-
   console.time('getContactsInRange');
   let window_contacts = await getContactsInRange(
     node_id, ref_date, result_date, [-80, 1],
@@ -63,8 +34,7 @@ async function getCloseContacts(node_id, ref_date, result_date) {
 
   console.log(`Periph dur: ${JSON.stringify(direct)}`);
   console.log(`Periph dur: ${JSON.stringify(proximal)}`);
-  // proximal = proximal.filter(item => {item.duration >= 15});
-  proximal = filterProximal(proximal);
+  proximal = filterProximal(proximal, direct);
 
   return { direct, proximal };
 }
@@ -90,7 +60,7 @@ function swabReport(request, response) {
   const { node_id } = request.body;
 
   // Get patient_info
-  swabReportModel.findOne({ node_id: node_id })
+  SwabReports.findOne({ node_id: node_id })
   .then((doc) => {
 	let patient_info = doc.patient_info;
 
@@ -101,7 +71,6 @@ function swabReport(request, response) {
   });
 }
 
-// notifyCloseContacts(node_id, ref_date, result_date);
 
 module.exports = {
   swabReport,

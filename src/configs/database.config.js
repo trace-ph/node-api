@@ -23,7 +23,13 @@ const config = (opts = {}) => {
     .catch((err) => logger.error(`Database error: ${err.message}`));
 };
 
+const close = () => {
+  mongoose.disconnect()
+    .then(() => console.log('Disconnected database'));
+};
+
 module.exports = {
   config,
   getConnectionUrl,
+  close
 };
