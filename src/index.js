@@ -1,5 +1,6 @@
 require('dotenv-safe').config();
 require('./configs/database.config').config();
+require('./services/garbColl').garbcoll();
 
 const express = require('express');
 const bodyParser = require('body-parser');

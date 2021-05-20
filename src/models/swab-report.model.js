@@ -32,7 +32,7 @@ const SwabReportSchema = new Schema(
   },
   {
     // What shall happen if user reported more than once?
-    timestamps: { createdAt: 'created_at' },
+	timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   },
 );
 

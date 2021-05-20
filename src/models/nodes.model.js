@@ -9,7 +9,7 @@ const NodeSchema = new Schema(
 
     device_id: { type: Schema.Types.String, required: true },
 
-	device_model: { type: Schema.Types.String, required: true},
+    device_model: { type: Schema.Types.String, required: true },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },

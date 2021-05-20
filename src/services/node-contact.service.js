@@ -5,7 +5,6 @@ const NodeContacts = require('~models/node-contact.model');
 const Calibration = require('~models/calibration.model');
 const NotifiedContacts = require('~models/notified-contact.model');
 
-// TODO: FIX TIMEZONES!
 
 async function getContactsInRange(
   node_id,
@@ -107,6 +106,10 @@ async function rssiCalibration(res) {
     const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
     const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
+	// If not within the calibration data, assume iOS device; Therefore no rssi calibration
+	if(deviceInfo == undefined || deviceInfo == null)
+		continue;
+
     // Replace RSSI with attenuation [1]
     res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
   }
@@ -132,11 +135,41 @@ function notified(res, type){
 }
 
 
+// Categorize contacts to direct or proximal based on RSSI attenuation
+function filterContacts(doc) {
+  const direct = [];
+  const proximal = [];
+
+  // Attenuation constants
+  const direct_atten = 27;
+  const prox_attenn = 51;
+
+  doc.forEach((contact) => {
+    if (contact.rssi <= direct_atten) direct.push(contact);
+    else if (contact.rssi > direct_atten && contact.rssi <= prox_atten) proximal.push(contact);
+  });
+
+  return { direct, proximal };
+}
+
+// Filter out the actual proximal contacts
+// Ensures no duplicates with determined direct contacts
+function filterProximal(proximal, direct) {
+  const res = {};
+  for (const [node_id, duration] of Object.entries(proximal))
+	if (duration > 15 && direct[node_id] == null)
+	  res[node_id] = duration;
+
+  return res;
+}
+
 module.exports = {
   getContactsInRange,
   convertToDuration,
   rssiCalibration,
-  notified
+  notified,
+  filterContacts,
+  filterProximal,
 };
 
 /*

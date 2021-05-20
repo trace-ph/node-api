@@ -5,7 +5,7 @@ const { DB_CONN, DB_NAME } = process.env;
 
 const getConnectionUrl = (forTest = false) => {
   const host = `${DB_CONN || 'mongodb://localhost:27017'}`.replace(/\/$/, '');
-  const dbName = DB_NAME || 'traceph';
+  const dbName = DB_NAME || 'detectph';
   if (forTest) {
     return `${host}/test-${dbName}`;
   }
@@ -23,7 +23,13 @@ const config = (opts = {}) => {
     .catch((err) => logger.error(`Database error: ${err.message}`));
 };
 
+const close = () => {
+  mongoose.disconnect()
+    .then(() => console.log('Disconnected database'));
+};
+
 module.exports = {
   config,
   getConnectionUrl,
+  close
 };
