@@ -34,7 +34,7 @@ const node_D = 'D';
 
 // Date to start off to
 var date = new Date();
-date.setDate(date.getDate() - 40);
+// date.setDate(date.getDate() - 40);
 
 
 

@@ -3,6 +3,7 @@
 */
 
 require('../configs/database.config').config();
+const { close } = require('../configs/database.config');
 const NotifiedContacts = require('~models/notified-contact.model');
 
 // const node_id = 'D';
@@ -15,4 +16,7 @@ NotifiedContacts.create({
 	node_id: node_id,
 	contact: 'direct',
 	notif: false,
-}).then(() => console.log('Okie'));
+}).then(() => {
+	console.log('Okie');
+	close();
+});
