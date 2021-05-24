@@ -11,8 +11,8 @@ const createContacts = (request, response) => {
 
         node_pairs: [contact.source_node_id, contact.node_pair].sort(),
         // Get ip from the server
-        ip:
-          request.header('x-forwarded-for') || request.connection.remoteAddress,
+        // ip:
+        //   request.header('x-forwarded-for') || request.connection.remoteAddress,
       })),
     )
     .then((result) => response.send(result))

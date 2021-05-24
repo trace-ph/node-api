@@ -32,7 +32,7 @@ async function getContactsInRange(
       timestamp: { $gte: reference_date, $lte: result_date },
       rssi: { $gt: dist_range[0], $lte: dist_range[1] },
     })
-    .select(['node_pairs', 'timestamp', 'rssi', 'source_node_id'])
+    .select(['node_pairs', 'timestamp', 'rssi', 'source_node_id', 'txpower'])
     // .where('timestamp').gt(reference_date).lt(result_date)
     // .where('rssi')
     .exec();
@@ -106,12 +106,11 @@ async function rssiCalibration(res) {
     const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
     const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
-	// If not within the calibration data, assume iOS device; Therefore no rssi calibration
+	// If not within the calibration data, assume iOS device; Replace RSSI with attenuation [1,3]
 	if(deviceInfo == undefined || deviceInfo == null)
-		continue;
-
-    // Replace RSSI with attenuation [1]
-    res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
+		res[i].rssi = contact.txpower - contact.rssi;
+	else
+    	res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
   }
 
   return res;
@@ -176,4 +175,5 @@ module.exports = {
 References:
 [1]	https://developers.google.com/android/exposure-notifications/ble-attenuation-overview#attenuations_as_distance_proxy
 [2] https://itnext.io/performance-tips-for-mongodb-mongoose-190732a5d382
+[3] https://developer.apple.com/documentation/exposurenotification/enexposureconfiguration/exposure_risk_value_calculation_in_exposurenotification_version_1
 */

@@ -40,7 +40,7 @@ const NodeContactSchema = new Schema(
 
     // Not clear on the TOR if this is determined on the client side or server side.
     // We'll assume that this is determined on the server.
-    ip: { type: Schema.Types.String, required: true },
+    // ip: { type: Schema.Types.String, required: true },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
