@@ -4,3 +4,4 @@ node_modules/
 *.log
 *.conf*
 certbot/
+package-lock.json
