@@ -12,11 +12,11 @@ services:
     links:
       - mongo
     environment:
-      - DATABASE_CONNECTION=mongodb://mongo:27017
+      - DB_CONN=mongodb://mongo:27017
       - API_PORT=8080
     volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
+      - .:/app/
+      - /app/node_modules
   mongo:
     image: mongo
     ports:

@@ -1,21 +1,17 @@
-'use strict';
-
 require('dotenv-safe').config();
+require('./configs/database.config').config();
 
-const { API_PORT } = process.env;
 const express = require('express');
-const bodyParser = require("body-parser");
-
-const { mobile, ...routes } = require('./routes');
-const schemas = require('./schemas')
-const middlewares = require('./middlewares')
+const bodyParser = require('body-parser');
+const Routes = require('./routes');
+const { morganLogger } = require('./middlewares/morganLogger');
 
 const app = express();
 
-// Routes
-app.use(bodyParser.json())
-app.post('/greet', middlewares.validator(schemas.routes.greet), mobile.greet);
+app.use(bodyParser.json());
+app.use(morganLogger);
 
-app.listen(API_PORT, () => {
-    console.log('App running at', API_PORT)
-});
+// Load routes
+Routes(app);
+
+module.exports = app;

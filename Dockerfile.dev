@@ -1,9 +1,11 @@
-FROM    node:10.16.3-alpine
+FROM    node:12.18.4-alpine
 
-WORKDIR /usr/app
-COPY    package.json package-lock.json ./
+WORKDIR /app
+COPY    src ./
+
 RUN     touch .env
+COPY    package.json ./
 
-RUN     npm install --no-cache
+RUN     npm i --unsafe-perm
 
 COPY    . .
