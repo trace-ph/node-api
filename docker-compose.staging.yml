@@ -3,6 +3,8 @@ services:
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
+    volumes:
+      - ./data/nginx-staging:/etc/nginx/conf.d
     ports:
       - "80:80"
     depends_on:

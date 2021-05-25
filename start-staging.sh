@@ -11,6 +11,15 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
+source ./.env
+
+trimmedDomain=$(echo "$DOMAIN_NAME" | sed 's:/*$::')
+domains=($trimmedDomain)
+fqdn="http:\/\/$trimmedDomain"
+
+cp ./data/nginx-staging/app.tmpl ./data/nginx-staging/app.conf
+
+sed -i -e "s/{{domain}}/$trimmedDomain/g" ./data/nginx-staging/app.conf
 
 echo "-------BUILDING PROD WEB API----------"
 docker-compose -f ./docker-compose.staging.yml build --no-cache
