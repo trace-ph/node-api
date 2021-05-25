@@ -36,7 +36,7 @@ const delayNotif = 1000 * 60;				// 1 minute
 
 // Checks if there's notification to be sent every 1 minute
 setTimeout(function check() {
-	logger.info('Checking NotifiedContacts...');
+	// logger.info('Checking NotifiedContacts...');
 	for(const [node_id, res] of Object.entries(connections)) {
 		// console.log(node_id);
 		NotifiedContacts.findOne({ node_id: node_id }, (err, doc) => {
