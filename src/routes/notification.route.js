@@ -40,7 +40,7 @@ setTimeout(function check() {
 	for(const [node_id, res] of Object.entries(connections)) {
 		// console.log(node_id);
 		NotifiedContacts.findOne({ node_id: node_id }, (err, doc) => {
-			if(err) return console.error(err);
+			if(err) return logger.error(err);
 			if(doc == null) return;
 
 			// Send notif if the user wasn't notified yet

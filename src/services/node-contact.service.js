@@ -10,7 +10,7 @@ async function getContactsInRange(
   node_id,
   reference_date,
   result_date,
-  dist_range = [-50, -30],
+  dist_range = [0, 100],
 ) {
   /**
    * Within contacts made 2 days before illness/testing date, to
@@ -73,6 +73,7 @@ function convertToDuration(docs, node_id) {
     for (let i = 1; i < num_periphs; i++) { // O(n)
       time_last = docs_periph[id][i - 1];
       const time_gap = docs_periph[id][i] - time_last;
+
       if (time_gap > max_gap) {
         // means i belongs to another duration, so take this as a dur
         console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
@@ -80,6 +81,7 @@ function convertToDuration(docs, node_id) {
         durations.push((time_last - time_init) / 1000 / 60); // in mins
         time_init = docs_periph[id][i];
         time_last = time_init;
+
       } else if (i === num_periphs - 1) {
         // reached the end and i is still part of the current blob
         durations.push((docs_periph[id][i] - time_init) / 1000 / 60); // in mins
@@ -87,22 +89,23 @@ function convertToDuration(docs, node_id) {
       }
     }
     console.log('--------------------');
+
     // sum all contact durations
     // NOTE: This assumes that duration is additive.
     console.log(`Duration array: ${durations}`);
     docs_periph[id] = durations.reduce((a, b) => a + b, 0);
   }
+
   return docs_periph;
 }
 
 async function rssiCalibration(res) {
-  console.log('RSSI calibration');
+  // console.log('RSSI calibration');
 
-  // Use node_ID of pair to get the corresponding RSSI correction and txPower
-  // based on its device model
+  // Use node_ID of pair to get the corresponding RSSI correction and txPower based on its device model
   for (i = 0; i < res.length; i++) {
     const contact = res[i];
-    const pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
+    const pairNode_id = contact.node_pair;
     const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
     const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
@@ -119,8 +122,13 @@ async function rssiCalibration(res) {
 
 // Saves who are notified contacts
 function notified(res, type){
+	let today = new Date().toISOString().split('T')[0];
+	today = new Date(today);
+	let tomorrow = new Date(today.getDate() + 1);
+
 	Object.keys(res).forEach(async (node_id) => {
-		let exist = await NotifiedContacts.exists({ node_id: node_id });
+		// Checks if there is notification set for the day. Should only have one notification a day per node_id
+		let exist = await NotifiedContacts.exists({ node_id: node_id, created_at: { $gte: today, $lt: tomorrow }});
 		if(!exist){
 			NotifiedContacts.create({
 				node_id: node_id,
@@ -128,7 +136,7 @@ function notified(res, type){
 				notif: false,
 			})
 			// .then((res) => console.log(res))
-			.catch((err) => console.error(err));
+			.catch((err) => logger.error(err));
 		}
 	});
 }
@@ -140,8 +148,8 @@ function filterContacts(doc) {
   const proximal = [];
 
   // Attenuation constants
-  const direct_atten = 27;
-  const prox_attenn = 51;
+  const direct_atten = 50;
+  const prox_attenn = 90;
 
   doc.forEach((contact) => {
     if (contact.rssi <= direct_atten) direct.push(contact);

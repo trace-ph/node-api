@@ -4,7 +4,6 @@ const SwabReports = require('~models/swab-report.model');
 
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
-const { rssiCalibration } = nodeContactService;
 const { notified } = nodeContactService;
 const { filterContacts, filterProximal } = nodeContactService;
 
@@ -12,16 +11,13 @@ const { filterContacts, filterProximal } = nodeContactService;
 // get close contacts
 async function getCloseContacts(node_id, ref_date, result_date) {
   console.time('getContactsInRange');
-  let window_contacts = await getContactsInRange(
-    node_id, ref_date, result_date, [-80, 1],
-  );
+  let window_contacts = await getContactsInRange(node_id, ref_date, result_date, );
   console.timeEnd('getContactsInRange');
 
   console.log(`Docs extracted: ${window_contacts.length}`);
 
   // Distance filter
   console.time('Distance filter');
-  window_contacts = await rssiCalibration(window_contacts);
   let { direct, proximal } = filterContacts(window_contacts);
   console.timeEnd('Distance filter');
   // console.log(direct);
@@ -56,7 +52,7 @@ async function notifyCloseContacts(node_id, ref_date, result_date) {
 
 // Handles the report from auth-api
 function swabReport(request, response) {
-  console.log(request.body);
+  // console.log(request.body);
   const { node_id } = request.body;
 
   // Get patient_info

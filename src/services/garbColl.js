@@ -16,7 +16,7 @@ function garbcoll() {
 
 	//Cron scheduler function (running every 12AM of Sundays)
 	cron.schedule("0 0 * * SUN", function(){
-    	logger.info("Deleting node contacts...");
+    	// logger.info("Deleting node contacts...");
 
 		// Set date to 3 weeks before current date
 		let older_date = new Date();
@@ -36,11 +36,8 @@ function garbcoll() {
 	cron.schedule("0 1 * * *", function(){
 		// logger.info("Deleting swab reports and notified contacts...");
 
-		// Set date to 1 day before current date
 		let date = new Date();
-		date.setDate(date.getDate() - 1);
-		console.log(date);
-		// Remove swab reports older than 1 day
+		// Remove swab reports older than today
 		SwabReports.countDocuments({ created_at: { $lt : date }}, function(err, count){
 			SwabReports.deleteMany({ created_at: { $lt : date }}, function(err) {
 				if(err) logger.error(err);
@@ -58,7 +55,7 @@ function garbcoll() {
 			});
 		});
 
-		// Remove notified contacts older than 1 week
+		// Remove unnotified contacts older than 1 week
 		let notifdate = new Date();
 		notifdate.setDate(notifdate.getDate() - 7);
 		NotifiedContacts.countDocuments({ created_at: { $lt : date }}, function(err, count){
