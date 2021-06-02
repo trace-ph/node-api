@@ -111,14 +111,13 @@ async function rssiCalibration(res) {
 
 	// If not within the calibration data, assume iOS device; Replace RSSI with attenuation [1,3]
 	if(deviceInfo == undefined || deviceInfo == null)
-		res[i].rssi = contact.txpower - contact.rssi;
+		res[i].rssi = contact.txPower - contact.rssi;
 	else
     	res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
   }
 
   return res;
 }
-
 
 // Saves who are notified contacts
 function notified(res, type){
