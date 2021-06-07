@@ -10,7 +10,7 @@ async function getContactsInRange(
   node_id,
   reference_date,
   result_date,
-  dist_range = [0, 100],
+  dist_range = [-100, 0],
 ) {
   /**
    * Within contacts made 2 days before illness/testing date, to
