@@ -2,11 +2,9 @@ const nodeContactModel = require('~models/node-contact.model');
 const errorResponse = require('~models/error-response.model');
 const nodeContactService = require('~services/node-contact.service');
 
-const { rssiCalibration } = nodeContactService;
 
 const createContacts = async (request, response) => {
   let { contacts } = request.body;
-  contacts = await rssiCalibration(contacts);
 
   nodeContactModel
     .create(

@@ -4,6 +4,7 @@ const SwabReports = require('~models/swab-report.model');
 
 const { getContactsInRange } = nodeContactService;
 const { convertToDuration } = nodeContactService;
+const { rssiCalibration } = nodeContactService;
 const { notified } = nodeContactService;
 const { filterContacts, filterProximal } = nodeContactService;
 
@@ -18,6 +19,7 @@ async function getCloseContacts(node_id, ref_date, result_date) {
 
   // Distance filter
   console.time('Distance filter');
+  window_contacts = await rssiCalibration(window_contacts);
   let { direct, proximal } = filterContacts(window_contacts);
   console.timeEnd('Distance filter');
   // console.log(direct);

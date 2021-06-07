@@ -105,7 +105,7 @@ async function rssiCalibration(res) {
   // Use node_ID of pair to get the corresponding RSSI correction and txPower based on its device model
   for (i = 0; i < res.length; i++) {
     const contact = res[i];
-    const pairNode_id = contact.node_pair;
+    const pairNode_id = contact.node_pairs[contact.source_node_id === contact.node_pairs[0] ? 1 : 0];
     const node = await Nodes.findOne({ node_id: pairNode_id }).select(['device_model']);
     const deviceInfo = await Calibration.findOne({ ' model': node.device_model }).select(['tx', 'rssi correction']);
 
