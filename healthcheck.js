@@ -18,7 +18,7 @@ const request = http.request(options, res => {
 	}
 });
 
-request.on('error', function(err) {
+request.on('error', function (err) {
 	process.exit(1);
 });
 

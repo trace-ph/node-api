@@ -1,15 +1,39 @@
 version: "3.1"
 services:
+  nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "8080:8080"
     environment:
-      API_PORT: 3000
-      DB_CONN: "mongodb://mongo:27017"
-      DB_NAME: "traceph"
-      HASH_KEY: "DEV_HASH_KEY"
+      - DB_CONN=mongodb://mongo:27017
+      - API_PORT=8080
+      - DB_NAME="traceph"
+      - HASH_KEY=A85A30E5-93F3-42AE-86EB-33BFD8133597
   mongo:
     image: mongo:4.2.5
     ports:
       - "27017-27019:27017-27019"
+    volumes: 
+      - shared_database_prod:/data/db
+volumes:
+  shared_database_prod:

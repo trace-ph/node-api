@@ -3,3 +3,6 @@ node_modules/
 .env
 *.log
 *.swp
+*.conf*
+certbot/
+package-lock.json

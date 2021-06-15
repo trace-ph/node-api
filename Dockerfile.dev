@@ -1,0 +1,11 @@
+FROM    node:12.18.4-alpine
+
+WORKDIR /app
+COPY    src ./
+
+RUN     touch .env
+COPY    package.json ./
+
+RUN     npm i --unsafe-perm
+
+COPY    . .
