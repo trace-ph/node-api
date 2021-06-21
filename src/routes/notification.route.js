@@ -32,14 +32,14 @@ router.post('/', (req, res) => {
 });
 
 
-const delayNotif = 1000 * 60;				// 1 minute
+const delayNotif = 1000 * 15;				// 15 seconds
 
-// Checks if there's notification to be sent every 1 minute
+// Checks if there's notification to be sent every 15 seconds
 setTimeout(function check() {
 	// logger.info('Checking NotifiedContacts...');
 	for(const [node_id, res] of Object.entries(connections)) {
 		// console.log(node_id);
-		NotifiedContacts.findOne({ node_id: node_id }, (err, doc) => {
+		NotifiedContacts.findOne({ node_id: node_id, notif: false }, (err, doc) => {
 			if(err) return logger.error(err);
 			if(doc == null) return;
 
@@ -63,7 +63,7 @@ setTimeout(function check() {
 // Receives confirmation of notification
 router.post('/confirm', (req, res) => {
 	const { node_id } = req.body;
-	NotifiedContacts.findOne({ node_id: node_id }, (err, doc) => {
+	NotifiedContacts.findOne({ node_id: node_id, notif: false }, (err, doc) => {
 		// Update doc
 		doc.notif = true;
 		doc.save();
