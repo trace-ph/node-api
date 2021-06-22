@@ -147,8 +147,8 @@ function filterContacts(doc) {
   const proximal = [];
 
   // Attenuation constants
-  const direct_atten = 50;
-  const prox_attenn = 90;
+  const direct_atten = 50;		// Approximately within 2 meters
+  const prox_atten = 90;		// Approximately within 3 meters
 
   doc.forEach((contact) => {
     if (contact.rssi <= direct_atten) direct.push(contact);
