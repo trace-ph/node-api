@@ -20,10 +20,6 @@ async function getContactsInRange(
 
   // change reference to start of the day: x-2
   reference_date.setDate(reference_date.getDate() - 2);
-  reference_date.setHours(24, 0, 0);
-
-  // change result/end date to the end of test result day
-  result_date.setHours(24, 0, 0);
 
   // filter by node_id, (x-2 : x+a), and rssi (in meters) < dist.
   return NodeContacts
@@ -43,7 +39,7 @@ function convertToDuration(docs, node_id) {
    * Group timestamps of a contact with a periph into a blob of duration.
    */
   const docs_periph = {}; // {periph id : [timestamp...]}
-  const max_gap = 30000; // max gap in a continuous duration, in millisec
+  const max_gap = 15000; // max gap in a continuous duration, in millisec; 15 seconds
   let periph_id;
 
   // TODO: determine optimal value for max_gap based on scanning and upload
@@ -53,9 +49,9 @@ function convertToDuration(docs, node_id) {
   docs.forEach((doc) => { // O(n)
     periph_id = doc.node_pairs[node_id === doc.node_pairs[0] ? 1 : 0];
     if (periph_id in docs_periph) {
-      docs_periph[periph_id].push(doc.timestamp.getTime());
+      docs_periph[periph_id].push(doc.timestamp);
     } else {
-      docs_periph[periph_id] = [doc.timestamp.getTime()];
+      docs_periph[periph_id] = [doc.timestamp];
     }
   });
 
@@ -66,18 +62,46 @@ function convertToDuration(docs, node_id) {
     // if adjacent timestamp is later than X seconds, consider as diff blob
     // NOTE: Let's make X=7
     let time_init = docs_periph[id][0]; // initial time of contact
-    let time_last = time_init; // time of last contact
-    const durations = []; // for blobs of contact duration with a periph
+		let time_last = time_init; // time of last contact
+		let today = new Date(new Date(time_init).setHours(24, 0, 0));	// Current day
+		let tomorrow = new Date(today);	// Day after
+		tomorrow.setDate(today.getDate() + 1);
+		let max = {
+			duration: 0,
+			day: today,
+		};
+    let durations = []; // for blobs of contact duration with a periph
     const num_periphs = docs_periph[id].length;
-    console.log('--------------------');
+
+    // console.log('--------------------');
     for (let i = 1; i < num_periphs; i++) { // O(n)
       time_last = docs_periph[id][i - 1];
       const time_gap = docs_periph[id][i] - time_last;
 
+			// If the time blob should start on the next day
+			if ( time_last > tomorrow && i !== num_periphs - 1) {
+				// console.log(`Duration array: ${durations}`);
+				// console.log(today, durations.reduce((a, b) => a + b, 0));
+
+				if (durations.reduce((a, b) => a + b, 0) > max.duration){
+					max = {
+						duration: durations.reduce((a, b) => a + b, 0),	// sum all contact durations
+						day: today,
+					};
+				}
+
+				time_init = time_last;
+				today = new Date(new Date(time_init).setHours(24, 0, 0));
+				tomorrow = new Date(today);
+				tomorrow.setDate(today.getDate() + 1);
+				durations = [];
+				continue;
+			}
+
       if (time_gap > max_gap) {
         // means i belongs to another duration, so take this as a dur
-        console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
-        console.log(`gap: ${time_gap / 1000}s`);
+        // console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
+        // console.log(`gap: ${time_gap / 1000}s`);
         durations.push((time_last - time_init) / 1000 / 60); // in mins
         time_init = docs_periph[id][i];
         time_last = time_init;
@@ -85,15 +109,19 @@ function convertToDuration(docs, node_id) {
       } else if (i === num_periphs - 1) {
         // reached the end and i is still part of the current blob
         durations.push((docs_periph[id][i] - time_init) / 1000 / 60); // in mins
-        console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
+        // console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
       }
     }
-    console.log('--------------------');
+    // console.log('--------------------');
 
-    // sum all contact durations
-    // NOTE: This assumes that duration is additive.
-    console.log(`Duration array: ${durations}`);
-    docs_periph[id] = durations.reduce((a, b) => a + b, 0);
+		if(durations.reduce((a, b) => a + b, 0) > max.duration)
+			docs_periph[id] = {
+				duration: durations.reduce((a, b) => a + b, 0),
+				day: today
+			};
+		else
+			docs_periph[id] = max;
+
   }
 
   return docs_periph;
@@ -113,7 +141,7 @@ async function rssiCalibration(res) {
 	if(deviceInfo == undefined || deviceInfo == null)
 		res[i].rssi = contact.txPower - contact.rssi;
 	else
-    	res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
+  	res[i].rssi = deviceInfo.tx - (contact.rssi + deviceInfo['rssi correction']);
   }
 
   return res;
@@ -121,11 +149,11 @@ async function rssiCalibration(res) {
 
 // Saves who are notified contacts
 function notified(res, type){
-	let today = new Date().toISOString().split('T')[0];
-	today = new Date(today);
-	let tomorrow = new Date(today.getDate() + 1);
+	let today = new Date(new Date().setHours(0, 0, 0));
+	let tomorrow = new Date(today);
+	tomorrow.setDate(today.getDate() + 1);
 
-	Object.keys(res).forEach(async (node_id) => {
+	for (const [node_id, day] of Object.entries(res)){
 		// Checks if there is notification set for the day. Should only have one notification a day per node_id
 		let exist = await NotifiedContacts.exists({ node_id: node_id, created_at: { $gte: today, $lt: tomorrow }});
 		if(!exist){
@@ -134,10 +162,10 @@ function notified(res, type){
 				contact: type,
 				notif: false,
 			})
-			// .then((res) => console.log(res))
+			.then((res) => console.log(node_id, day))
 			.catch((err) => logger.error(err));
 		}
-	});
+	}
 }
 
 
@@ -152,19 +180,31 @@ function filterContacts(doc) {
 
   doc.forEach((contact) => {
     if (contact.rssi <= direct_atten) direct.push(contact);
-    else if (contact.rssi > direct_atten && contact.rssi <= prox_atten) proximal.push(contact);
+    if (contact.rssi <= prox_atten) proximal.push(contact);
   });
 
   return { direct, proximal };
 }
 
+// Filter out the actual direct contacts
+function filterDirect(direct) {
+	const res = {};
+
+	for (const [node_id, obj] of Object.entries(direct))
+		if (obj.duration > 0.3)
+		  res[node_id] = obj.day;
+
+  return res;
+}
+
 // Filter out the actual proximal contacts
 // Ensures no duplicates with determined direct contacts
-function filterProximal(proximal, direct) {
-  const res = {};
-  for (const [node_id, duration] of Object.entries(proximal))
-	if (duration > 15 && direct[node_id] == null)
-	  res[node_id] = duration;
+function filterProximal(direct, proximal) {
+	const res = {};
+
+	for (const [node_id, obj] of Object.entries(proximal))
+		if (obj.duration > 15 && direct[node_id] == null)
+		  res[node_id] = obj.day;
 
   return res;
 }
@@ -175,6 +215,7 @@ module.exports = {
   rssiCalibration,
   notified,
   filterContacts,
+	filterDirect,
   filterProximal,
 };
 

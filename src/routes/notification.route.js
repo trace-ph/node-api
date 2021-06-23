@@ -46,7 +46,7 @@ setTimeout(function check() {
 			// Send notif if the user wasn't notified yet
 			if(!doc.notif){
 				let date = formatDate(doc.created_at);
-				let message = `We have determined that you are a ${doc.contact} contact on ${date}.\nPlease contact your designated health personnel or contact tracer of your area.`;
+				let message = `We have determined that you may be a ${doc.contact} contact on ${date}.\nPlease contact your designated health personnel or contact tracer of your area.`;
 				res.status(200).send(message);
 
 				// Delete in connections list
