@@ -148,7 +148,7 @@ async function rssiCalibration(res) {
 }
 
 // Saves who are notified contacts
-function notified(res, type){
+async function notified(res, type){
 	let today = new Date(new Date().setHours(0, 0, 0));
 	let tomorrow = new Date(today);
 	tomorrow.setDate(today.getDate() + 1);
