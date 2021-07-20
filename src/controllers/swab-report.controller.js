@@ -69,4 +69,5 @@ function swabReport(request, response) {
 
 module.exports = {
   swabReport,
+	notifyCloseContacts,
 };

@@ -21,6 +21,10 @@ async function getContactsInRange(
   // change reference to start of the day: x-2
   reference_date.setDate(reference_date.getDate() - 2);
 
+	// Change result date to be 12 midnight of the next day
+	result_date.setDate(result_date.getDate() + 1);
+	console.log("Getting docs - From: ", reference_date, " to ", result_date);
+
   // filter by node_id, (x-2 : x+a), and rssi (in meters) < dist.
   return NodeContacts
     .find({
@@ -100,7 +104,7 @@ function convertToDuration(docs, node_id) {
 
       if (time_gap > max_gap) {
         // means i belongs to another duration, so take this as a dur
-        // console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
+				// console.log(`dur: ${new Date(time_init).toLocaleTimeString()} -- ${new Date(time_last).toLocaleTimeString()}`);
         // console.log(`gap: ${time_gap / 1000}s`);
         durations.push((time_last - time_init) / 1000 / 60); // in mins
         time_init = docs_periph[id][i];

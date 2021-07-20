@@ -17,8 +17,8 @@ const min15tosec = 60 * 15;
 const timelimit = Math.floor((Math.random() * min15tosec));
 
 // Attenuation interval
-const atten_2m = 27;
-const atten_3m = 14;
+const atten_2m = 50;
+const atten_3m = 90;
 
 // Device models per node type
 const deviceModelA = 'SM-A705MN';
@@ -34,7 +34,7 @@ const node_D = 'D';
 
 // Date to start off to
 var date = new Date();
-// date.setDate(date.getDate() - 40);
+// date.setDate(date.getDate() - 3);
 
 
 
