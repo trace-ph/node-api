@@ -75,16 +75,24 @@ router.post('/confirm', (req, res) => {
 
 
 const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const options = {
+	year: 'numeric', month: 'numeric', day: 'numeric',
+	hour: 'numeric', minute: 'numeric', second: 'numeric',
+	hour12: false,
+	timeZone: 'Asia/Taipei'
+};
 
 function formatDate(createdDate){
+	createdDate = new Date(createdDate.toLocaleDateString('en-US', options));
 	let m = month[createdDate.getMonth()];
 	let d = createdDate.getDate();
 	let y = createdDate.getFullYear();
 	let h = createdDate.getHours();
 	let min = createdDate.getMinutes();
+	
 	if(h > 12 && (h % 12) != 0)
 		return date = m + ' ' + d + ', ' + y + ' ' + (h % 12) + ':' + min + 'PM';
-	else if(h > 12 && (h % 12) == 0)
+	else if(h >= 12 && (h % 12) == 0)
 		return date = m + ' ' + d + ', ' + y + ' 12:' + min + 'PM';
 	else if(h < 12 && h != 0)
 		return date = m + ' ' + d + ', ' + y + ' ' + h + ':' + min + 'AM';
