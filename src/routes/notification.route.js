@@ -84,7 +84,7 @@ function formatDate(createdDate){
 	};
 
 	createdDate = new Date(createdDate.toLocaleDateString('en-US', options));
-	return moment(createdDate).format("MMM D, YYYY h:mm A");
+	return moment(createdDate).format("MMMM D, YYYY h:mm A");
 }
 
 
