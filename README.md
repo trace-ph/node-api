@@ -1,83 +1,80 @@
-# TracePH
+# DetectPH node-api
+DetectPH API features:
+* Registering of devices as users
+* Keeping record of user's proximity contacts
+* Determining close contacts of users
+* Notifying determined close contacts
 
-TracePH API using NodeJS, Express MongoDB
+## Prerequisites
+* Node version 10 and above (NPM should be included)
+* MongoDB
+* Linux environment or terminal
+
 ## Getting Started
+This should be done in a Linux environment or terminal. If you're not using Linux, update the preinstall and postinstall commands in package.json.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Here is a step by step instruction on how to run this API **locally**.
 
-### Prerequisites
+1) Clone this repository.
+2) Install node modules in the src/ directory.
 
-Node version 10 and above
+	```
+	npm i
+	```
 
-MongoDB running in local
+3) Fill up the necessary information in .env.example file and save it as .env.
 
-### Installing
+	1) Include a new variable *API_URL*. You will put your IP address or URL here for the app to connect to.
+	
+	2) *NODE_ENV* should be set to "test" when testing but not in production. 
 
-A step by step series of examples that tell you how to get a development env running
+	3) The *IOS_SECRET* and *ANDROID_SECRET* is for middleware/authenticator.js. You may create secrets or leave it as blank. Make sure to update the config of dotenv in index.js that there's a blank variable.
 
-Install node modules
+4) Update the server.js file to include API_URL.
+	```
+	const { API_URL, API_PORT } = process.env;
 
-```
-npm i
-```
+	const httpServer = server.listen(API_PORT, API_URL, () => {
+		logger.info(`App running at ${API_URL}:${API_PORT}`);
+	});
+	```
 
-### Deploying locally
+5) Run the server while still in src/ directory.
 
-```
-cd src && npm start
-```
-
-### Deploying via Docker
-Build the docker image
-
-```
-docker build -t trace-ph:{semver} .
-```
-
-Then create the container
-
-```
-docker run --name={identifier} -d -p 80:{port to access locally} trace-ph:{semver}
-```
+	```
+	npm start
+	```
 
 ## Running the tests
-Run tests once
+### Run tests once
 
 ```
 npm test
 ```
 
-Automatically run tests during code changes
+### Automatically run tests during code changes
 
 ```
 npm run test:watch
 ```
 
-## Deployment
-
-Coming soon.
 
 ## Built With
-
 * [NodeJS](https://https://nodejs.org/)
 * [ExpressJS](https://github.com/expressjs/express/)
 * [MongoDB](https://www.mongodb.com/)
 
-## Contributing
-
-Email [us](mailto:jybantang@up.edu.ph) :)
+## Contact Us
+Email us at [detectph.updsc@gmail.com](mailto:detectph.updsc@gmail.com).
+You can also visit our [website](https://www.detectph.com) to know more about our app.
 
 ## Versioning
-
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
-
 * **Patrick Buitre** - [Github](https://github.com/pats110217)
+* **Angelique Rafael** - [Github](https://github.com/JelloJill)
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
 
